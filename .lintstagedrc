@@ -1,0 +1,4 @@
+{
+  "src/**/*.{js,ts,tsx,vue}": "npm run lint:script",
+  "src/**/*.{vue,css,scss}": "npm run lint:style"
+}
