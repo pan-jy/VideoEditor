@@ -14,7 +14,7 @@ import { toggleDark, isDark } from '~/composables'
       />
     </el-menu-item>
     <el-menu-item class="item">
-      <el-button class="item__btn" type="primary">导出</el-button>
+      <el-button class="item__btn" type="primary" disabled>导出</el-button>
     </el-menu-item>
   </el-menu>
 </template>

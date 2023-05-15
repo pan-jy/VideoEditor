@@ -1,9 +1,16 @@
 <template>
   <el-config-provider namespace="ep">
-    <Header />
-    <main>
-      <Side />
-    </main>
+    <HeaderContainer />
+    <div class="content">
+      <ResourcesContainer />
+      <main class="content-main">
+        <div class="content-main-top">
+          <PlayerContainer />
+          <AttributesContainer />
+        </div>
+        <TracksContainer />
+      </main>
+    </div>
   </el-config-provider>
 </template>
 
@@ -15,9 +22,20 @@
   width: 100%;
   height: 100%;
 
-  main {
+  .content {
     display: flex;
     flex: 1;
+
+    &-main {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+
+      &-top {
+        display: flex;
+        flex: 1;
+      }
+    }
   }
 }
 </style>

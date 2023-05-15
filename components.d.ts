@@ -9,6 +9,9 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    Attribute: typeof import('./src/components/container/Attribute.vue')['default']
+    AttributeContainer: typeof import('./src/components/container/AttributeContainer.vue')['default']
+    AttributesContainer: typeof import('./src/components/container/AttributesContainer.vue')['default']
     BaseHeader: typeof import('./src/components/layouts/BaseHeader.vue')['default']
     BaseSide: typeof import('./src/components/layouts/BaseSide.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
@@ -22,8 +25,16 @@ declare module '@vue/runtime-core' {
     ElMenuItemGroup: typeof import('element-plus/es')['ElMenuItemGroup']
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     ElTag: typeof import('element-plus/es')['ElTag']
-    Header: typeof import('./src/components/layouts/Header.vue')['default']
+    Header: typeof import('./src/components/container/Header.vue')['default']
+    HeaderContainer: typeof import('./src/components/container/HeaderContainer.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
-    Side: typeof import('./src/components/layouts/Side.vue')['default']
+    Player: typeof import('./src/components/container/Player.vue')['default']
+    PlayerContainer: typeof import('./src/components/container/PlayerContainer.vue')['default']
+    ResourcesContainer: typeof import('./src/components/container/ResourcesContainer.vue')['default']
+    Side: typeof import('./src/components/container/Side.vue')['default']
+    SideContainer: typeof import('./src/components/container/SideContainer.vue')['default']
+    Track: typeof import('./src/components/container/Track.vue')['default']
+    TrackContainer: typeof import('./src/components/container/TrackContainer.vue')['default']
+    TracksContainer: typeof import('./src/components/container/TracksContainer.vue')['default']
   }
 }

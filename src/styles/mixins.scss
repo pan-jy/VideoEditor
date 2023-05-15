@@ -1,0 +1,8 @@
+@mixin header {
+  box-sizing: border-box;
+  width: 100%;
+  height: 40px;
+  padding: 0 10px;
+  line-height: 40px;
+  border-bottom: 1px solid var(--ep-border-color);
+}
