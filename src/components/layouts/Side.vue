@@ -8,6 +8,6 @@
 .side {
   width: 40px;
   height: 100%;
-  border-right: solid 1px var(--el-menu-border-color);
+  border-right: solid 1px var(--ep-menu-border-color);
 }
 </style>

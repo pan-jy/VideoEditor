@@ -1,8 +1,10 @@
 <template>
-  <Header />
-  <main>
-    <Side />
-  </main>
+  <el-config-provider namespace="ep">
+    <Header />
+    <main>
+      <Side />
+    </main>
+  </el-config-provider>
 </template>
 
 <script setup lang="ts"></script>
