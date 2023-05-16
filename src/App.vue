@@ -2,7 +2,7 @@
   <el-config-provider namespace="ep">
     <HeaderContainer />
     <div class="content">
-      <ResourcesContainer />
+      <ResourcesContainer :width="width" />
       <main class="content-main">
         <div class="content-main-top">
           <PlayerContainer />
@@ -14,17 +14,19 @@
   </el-config-provider>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useWindowSize } from '@vueuse/core'
+const { width } = useWindowSize()
+</script>
 <style lang="scss">
 #app {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  height: 100%;
 
   .content {
     display: flex;
     flex: 1;
+    overflow: hidden;
 
     &-main {
       display: flex;

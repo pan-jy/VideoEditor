@@ -1,6 +1,8 @@
 <template>
   <div class="player">
-    <header class="player-header">播放器</header>
+    <header class="player-header">
+      <span>播放器</span>
+    </header>
   </div>
 </template>
 
@@ -15,6 +17,8 @@
 
   &-header {
     @include header;
+
+    overflow: hidden;
   }
 }
 </style>

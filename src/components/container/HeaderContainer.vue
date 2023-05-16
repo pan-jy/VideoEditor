@@ -5,7 +5,7 @@ import { toggleDark, isDark } from '~/composables'
 
 <template>
   <el-menu mode="horizontal" :ellipsis="false">
-    <div class="flex-grow" />
+    <div style="flex: 1" />
     <el-menu-item class="item" @click="toggleDark()">
       <el-button
         class="item__btn item__btn--none"
@@ -20,10 +20,6 @@ import { toggleDark, isDark } from '~/composables'
 </template>
 
 <style lang="scss" scoped>
-.flex-grow {
-  flex-grow: 1;
-}
-
 .item {
   height: 40px;
 

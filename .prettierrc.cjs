@@ -7,5 +7,6 @@ module.exports = {
   bracketSpacing: true, // 对象大括号直接是否有空格，默认为 true，效果：{ a: 1 }
   arrowParens: 'always',
   htmlWhitespaceSensitivity: 'ignore',
-  jsxSingleQuote: true
+  jsxSingleQuote: true,
+  endOfLine: 'auto'
 }
