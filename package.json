@@ -6,6 +6,7 @@
   "scripts": {
     "prepare": "husky install",
     "lint": "npm run lint:script && npm run lint:style",
+    "lint-fix": "npm run lint:script-fix && npm run lint:style-fix",
     "lint:script": "eslint --ext .js,.jsx,.ts,.tsx,.vue --quiet ./",
     "lint:script-fix": "eslint --ext .js,.jsx,.ts,.tsx,.vue --fix --quiet ./",
     "lint:style": "stylelint \"./**/*.{css,scss,sass,vue,html}\"",

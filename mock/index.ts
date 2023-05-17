@@ -21,7 +21,8 @@ const mockMethods: MockMethod[] = [
                 width: 1232,
                 height: 720,
                 fps: 30,
-                frameCount: 712
+                frameCount: 712,
+                time: 24000
               },
               {
                 name: 'video_2',
@@ -31,7 +32,8 @@ const mockMethods: MockMethod[] = [
                 width: 1242,
                 height: 652,
                 fps: 30,
-                frameCount: 150
+                frameCount: 150,
+                time: 5000
               }
             ]
           },
@@ -47,7 +49,8 @@ const mockMethods: MockMethod[] = [
                 width: 1242,
                 height: 652,
                 fps: 30,
-                frameCount: 150
+                frameCount: 150,
+                time: 5000
               }
             ]
           },
@@ -63,7 +66,8 @@ const mockMethods: MockMethod[] = [
                 height: 652,
                 frameCount: 150,
                 fps: 30,
-                source: '/video/video_4.mp4'
+                source: '/video/video_4.mp4',
+                time: 5000
               }
             ]
           }

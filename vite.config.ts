@@ -13,6 +13,7 @@ export default defineConfig({
   plugins: [
     vue(),
     AutoImport({
+      imports: ['vue'],
       resolvers: [ElementPlusResolver()]
     }),
     Components({
@@ -22,9 +23,7 @@ export default defineConfig({
         })
       ]
     }),
-    viteMockServe({
-      enable: true
-    })
+    viteMockServe()
   ],
   css: {
     preprocessorOptions: {

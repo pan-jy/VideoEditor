@@ -12,6 +12,7 @@ declare module '@vue/runtime-core' {
     Attribute: typeof import('./src/components/container/Attribute.vue')['default']
     AttributeContainer: typeof import('./src/components/container/AttributeContainer.vue')['default']
     AttributesContainer: typeof import('./src/components/container/AttributesContainer.vue')['default']
+    AudioItem: typeof import('./src/components/item/AudioItem.vue')['default']
     BaseHeader: typeof import('./src/components/layouts/BaseHeader.vue')['default']
     BaseSide: typeof import('./src/components/layouts/BaseSide.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']

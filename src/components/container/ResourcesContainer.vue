@@ -4,7 +4,7 @@
       v-for="(menuItem, index) in menuList"
       :key="index"
       :index="index"
-      @click="menu.itemClick"
+      @click="itemClick"
     >
       <div class="menu-item">
         <el-icon>
@@ -24,14 +24,12 @@
   <div class="resources" :class="{ 'resources--closed': isClosed }">
     <header class="resources-header">
       <span class="resources-header-title">
-        {{ menuList[menu.activeIndex.value].title }}
+        {{ menuList[activeIndex].title }}
       </span>
       <el-icon @click="toggle()" style="cursor: pointer"><Fold /></el-icon>
     </header>
     <main class="resources-main">
-      <ResourcesList
-        :resourcesList="menu.allResources[menu.activeIndex.value]"
-      />
+      <ResourcesList :resourcesList="allResources[activeIndex]" />
     </main>
   </div>
 </template>
@@ -59,20 +57,18 @@ watch(
   { immediate: true }
 )
 
-const menu = {
-  activeIndex: ref(0),
-  allResources: reactive<ResourcesList[]>([]),
-  async itemClick(e: typeof import('element-plus/es')['ElMenuItem']) {
-    menu.activeIndex.value = e.index
-    isClosed.value = false
-    menu.allResources[menu.activeIndex.value] = await getResources(
-      menuList[menu.activeIndex.value].type
-    )
-  }
+const activeIndex = ref(0)
+const allResources = reactive<ResourcesList[]>([])
+async function itemClick(e: typeof import('element-plus/es')['ElMenuItem']) {
+  activeIndex.value = e.index
+  isClosed.value = false
+  allResources[activeIndex.value] = await getResources(
+    menuList[activeIndex.value].type
+  )
 }
 
 onMounted(async () => {
-  if (!isClosed) menu.allResources[0] = await getResources(menuList[0].type)
+  if (!isClosed.value) allResources[0] = await getResources(menuList[0].type)
 })
 </script>
 
