@@ -18,7 +18,7 @@ defineProps<{
 </script>
 
 <style lang="scss" scoped>
-@import url('~/styles/mixins');
+@import '~/styles/mixins.scss';
 
 header {
   @include header;

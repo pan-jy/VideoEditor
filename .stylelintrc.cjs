@@ -29,7 +29,6 @@ module.exports = {
   plugins: ['stylelint-prettier'],
   // 继承推荐规范配置
   extends: [
-    'stylelint-config-standard',
     'stylelint-config-recommended-scss',
     'stylelint-config-recommended-vue/scss',
     'stylelint-config-html/vue',
@@ -49,6 +48,7 @@ module.exports = {
   // 自定义规则
   rules: {
     'prettier/prettier': true,
+    'scss/at-import-partial-extension': null,
     // 允许 global 、export 、v-deep等伪类
     'selector-pseudo-class-no-unknown': [
       true,
