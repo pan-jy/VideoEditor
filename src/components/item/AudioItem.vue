@@ -1,10 +1,10 @@
 <template>
   <div class="audio-item">
     <el-image class="audio-item-cover" :src="audioItem.cover" lazy />
-    <el-icon size="48" class="play-icon"><VideoPlay /></el-icon>
+    <el-icon size="40" class="play-icon"><VideoPlay /></el-icon>
     <main class="audio-item-info">
       <span>{{ audioItem.name }}</span>
-      <span>{{ convertTime(audioItem.time) }}</span>
+      <span>{{ useConvertTime(audioItem.time) }}</span>
     </main>
   </div>
 </template>
@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import type { AudioItem } from '~/datas/types/resources'
 import { VideoPlay } from '@element-plus/icons-vue'
-import convertTime from '~/composables/convertTime'
+import useConvertTime from '~/composables/useConvertTime'
 
 defineProps<{ audioItem: AudioItem }>()
 </script>
@@ -51,6 +51,7 @@ defineProps<{ audioItem: AudioItem }>()
     position: absolute;
     left: calc($item-height / 2);
     display: none;
+    opacity: 0.7;
     transform: translateX(-50%);
   }
 

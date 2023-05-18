@@ -7,7 +7,7 @@
       <div class="item-non-audio" v-if="resources.type !== 'audio'">
         <el-image class="item-non-audio-cover" :src="item.cover" lazy />
         <span class="item-non-audio-time" v-if="resources.type === 'video'">
-          {{ convertTime((item as VideoItem).time) }}
+          {{ useConvertTime((item as VideoItem).time) }}
         </span>
       </div>
       <AudioItem v-else :audioItem="item" />
@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import type { ResourcesList, VideoItem } from '~/datas/types/resources'
-import convertTime from '~/composables/convertTime'
+import useConvertTime from '~/composables/useConvertTime'
 
 defineProps<{ resourcesList: ResourcesList }>()
 </script>

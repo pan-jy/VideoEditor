@@ -15,6 +15,7 @@
       <!-- <template #title>{{ menuItem.title }}</template> -->
     </el-menu-item>
     <div style="flex-grow: 1"></div>
+    <!-- 列表收起时底部显示 -->
     <el-menu-item v-show="isClosed" @click="toggle()">
       <div class="menu-item">
         <el-icon style="cursor: pointer"><Expand /></el-icon>
@@ -26,7 +27,15 @@
       <span class="resources-header-title">
         {{ menuList[activeIndex].title }}
       </span>
-      <el-icon @click="toggle()" style="cursor: pointer"><Fold /></el-icon>
+      <div class="resources-header-icon">
+        <el-icon
+          :class="{ 'is-loading': refreshing }"
+          @click="refreshResources(activeIndex)"
+        >
+          <Refresh />
+        </el-icon>
+        <el-icon @click="toggle()"><Fold /></el-icon>
+      </div>
     </header>
     <main class="resources-main">
       <ResourcesList :resourcesList="allResources[activeIndex]" />
@@ -36,7 +45,7 @@
 
 <script lang="ts" setup>
 import { menuList } from '~/datas/resources'
-import { Fold, Expand } from '@element-plus/icons-vue'
+import { Fold, Expand, Refresh } from '@element-plus/icons-vue'
 import { useToggle } from '@vueuse/core'
 import { watch, ref, reactive, onMounted } from 'vue'
 import { getResources } from '~/request/apis/resources'
@@ -59,16 +68,25 @@ watch(
 
 const activeIndex = ref(0)
 const allResources = reactive<ResourcesList[]>([])
+// 刷新列表资源
+const refreshing = ref(false)
+async function refreshResources(index: number) {
+  refreshing.value = true
+  allResources[index] = await getResources(menuList[index].type)
+  // 模拟
+  setTimeout(() => {
+    refreshing.value = false
+  }, 500)
+}
 async function itemClick(e: typeof import('element-plus/es')['ElMenuItem']) {
   activeIndex.value = e.index
   isClosed.value = false
-  allResources[activeIndex.value] = await getResources(
-    menuList[activeIndex.value].type
-  )
+  if (allResources[activeIndex.value] === undefined)
+    refreshResources(activeIndex.value)
 }
 
 onMounted(async () => {
-  if (!isClosed.value) allResources[0] = await getResources(menuList[0].type)
+  if (!isClosed.value) refreshResources(0)
 })
 </script>
 
@@ -104,6 +122,7 @@ onMounted(async () => {
 .resources {
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   width: 300px;
   height: 100%;
   overflow: hidden;
@@ -121,6 +140,14 @@ onMounted(async () => {
 
     justify-content: space-between;
     font-size: 18px;
+
+    .ep-icon {
+      cursor: pointer;
+
+      &:not(:first-of-type) {
+        margin-left: 10px;
+      }
+    }
   }
 
   &-main {
