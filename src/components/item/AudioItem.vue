@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import type { AudioItem } from '~/datas/types/resources'
 import { VideoPlay } from '@element-plus/icons-vue'
-import useConvertTime from '~/composables/useConvertTime'
+import useConvertTime from '~/common/utils/timeFormat'
 
 defineProps<{ audioItem: AudioItem }>()
 </script>

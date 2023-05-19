@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import type { ResourcesList, VideoItem } from '~/datas/types/resources'
-import useConvertTime from '~/composables/useConvertTime'
+import useConvertTime from '~/common/utils/timeFormat'
 
 defineProps<{ resourcesList: ResourcesList }>()
 </script>

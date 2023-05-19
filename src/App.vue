@@ -22,7 +22,7 @@
 import { MoreFilled } from '@element-plus/icons-vue'
 import { useWindowSize } from '@vueuse/core'
 import { DefineComponent, onMounted, ref } from 'vue'
-import { useResize } from '~/composables/useResizeElement'
+import { useResize } from '~/common/composables/useResizeElement'
 
 const { width } = useWindowSize()
 const dividerHorizontal = ref<DefineComponent | null>(null)

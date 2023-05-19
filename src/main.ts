@@ -1,5 +1,8 @@
 import { createApp } from 'vue'
 import '~/styles/index.scss'
 import App from './App.vue'
+import installFFmpeg from '~/plugins/installFFmpeg' // ffmpeg 集成
 
-createApp(App).mount('#app')
+const app = createApp(App)
+app.use(installFFmpeg)
+app.mount('#app')

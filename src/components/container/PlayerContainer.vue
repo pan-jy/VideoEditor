@@ -60,6 +60,7 @@ import { VideoPause, VideoPlay } from '@element-plus/icons-vue'
       position: absolute;
       left: 50%;
       font-size: 28px;
+      cursor: pointer;
       opacity: 0.8;
       transform: translateX(-50%);
     }
