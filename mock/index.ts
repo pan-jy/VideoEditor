@@ -131,52 +131,62 @@ const mockMethods: MockMethod[] = [
               {
                 name: '文字1',
                 templateId: 0,
-                cover: '/image/text/text_0.png'
+                cover: '/image/text/text_0.png',
+                source: '/image/text/text_0.png'
               },
               {
                 name: '文字2',
                 templateId: 0,
-                cover: '/image/text/text_0.png'
+                cover: '/image/text/text_0.png',
+                source: '/image/text/text_0.png'
               },
               {
                 name: '文字3',
                 templateId: 0,
-                cover: '/image/text/text_0.png'
+                cover: '/image/text/text_0.png',
+                source: '/image/text/text_0.png'
               },
               {
                 name: '文字4',
                 templateId: 0,
-                cover: '/image/text/text_0.png'
+                cover: '/image/text/text_0.png',
+                source: '/image/text/text_0.png'
               },
               {
                 name: '文字5',
                 templateId: 0,
-                cover: '/image/text/text_0.png'
+                cover: '/image/text/text_0.png',
+                source: '/image/text/text_0.png'
               },
               {
                 name: '文字6',
                 templateId: 1,
-                cover: '/image/text/text_1.png'
+                cover: '/image/text/text_1.png',
+                source: '/image/text/text_1.png'
               },
               {
                 name: '文字7',
                 templateId: 1,
-                cover: '/image/text/text_1.png'
+                cover: '/image/text/text_1.png',
+                source: '/image/text/text_1.png'
               },
               {
                 name: '文字8',
                 templateId: 1,
-                cover: '/image/text/text_1.png'
+                cover: '/image/text/text_1.png',
+                source: '/image/text/text_1.png'
               },
               {
                 name: '文字9',
                 templateId: 1,
-                cover: '/image/text/text_1.png'
+                cover: '/image/text/text_1.png',
+                source: '/image/text/text_1.png'
               },
               {
                 name: '文字10',
                 templateId: 1,
-                cover: '/image/text/text_1.png'
+                cover: '/image/text/text_1.png',
+                source: '/image/text/text_1.png'
               }
             ]
           }

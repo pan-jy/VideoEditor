@@ -27,7 +27,7 @@ type AudioItem = Pick<
   'cover' | 'time' | 'format' | 'name' | 'source'
 >
 
-type TextItem = Pick<ResourcesItem, 'name' | 'templateId' | 'cover'>
+type TextItem = Pick<ResourcesItem, 'name' | 'templateId' | 'cover' | 'source'>
 
 type ImageItem = Omit<
   ResourcesItem,
@@ -57,4 +57,12 @@ type ResourcesList = Array<
     }
 >
 
-export type { MenuItem, ResourcesItem, ResourcesList, VideoItem, AudioItem }
+export type {
+  MenuItem,
+  ResourcesItem,
+  ResourcesList,
+  VideoItem,
+  AudioItem,
+  ImageItem,
+  TextItem
+}

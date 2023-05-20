@@ -2,13 +2,10 @@
   <div class="track">
     <header class="track-header">
       <div class="track-header-left">
-        <!-- <el-icon><ArrowLeftBold /></el-icon>
-        <el-icon><ArrowRightBold /></el-icon>
-        <el-icon><DeleteFilled /></el-icon> -->
         <el-tooltip
-          v-for="item in headerBtns"
-          :key="item.text"
-          :content="item.text"
+          v-for="item in trackHeaderMenu"
+          :key="item.title"
+          :content="item.title"
         >
           <el-button :icon="item.icon" circle />
         </el-tooltip>
@@ -24,7 +21,13 @@
         />
       </div>
     </header>
-    <main class="track-main">
+
+    <main
+      class="track-main"
+      ref="trackContainer"
+      @dragover="(e) => e.preventDefault()"
+      @drop="onDrop"
+    >
       <aside class="track-main-aside"></aside>
       <article class="track-main-content">
         <div class="info">
@@ -37,32 +40,28 @@
 </template>
 
 <script setup lang="ts">
-import {
-  ArrowLeftBold,
-  ArrowRightBold,
-  DeleteFilled,
-  Files
-} from '@element-plus/icons-vue'
-import { DefineComponent, ref } from 'vue'
+import { Files } from '@element-plus/icons-vue'
+import { trackHeaderMenu } from '~/datas/baseMenu'
+import { ref } from 'vue'
+import { fetchFile } from '~/common/utils/fetchFile'
 
-const headerBtns: Array<{
-  icon: DefineComponent
-  text: string
-}> = [
-  {
-    icon: ArrowLeftBold,
-    text: '后退'
-  },
-  {
-    icon: ArrowRightBold,
-    text: '前进'
-  },
-  {
-    icon: DeleteFilled,
-    text: '删除'
-  }
-]
 const multiple = ref(1)
+const trackContainer = ref<HTMLDivElement>()
+
+async function onDrop(e: DragEvent) {
+  e.preventDefault()
+  // 获取拖动的文件
+  const fileInfo = e.dataTransfer?.getData('fileInfo')
+  const files = Array.from(e.dataTransfer?.files ?? [])
+  if (fileInfo) {
+    const fileInfoJSON = JSON.parse(fileInfo) as {
+      source: string
+      name: string
+    }
+    files[0] = await fetchFile(fileInfoJSON.source, fileInfoJSON.name)
+  }
+  console.log(files)
+}
 </script>
 
 <style lang="scss" scoped>

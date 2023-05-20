@@ -3,7 +3,13 @@
     <header>
       <span>{{ resources.title }}</span>
     </header>
-    <div class="item" v-for="item in resources.items" :key="item.name">
+    <div
+      class="item"
+      v-for="item in resources.items"
+      :key="item.name"
+      draggable="true"
+      @dragstart="dragResources($event, item)"
+    >
       <div class="item-non-audio" v-if="resources.type !== 'audio'">
         <el-image class="item-non-audio-cover" :src="item.cover" lazy />
         <span class="item-non-audio-time" v-if="resources.type === 'video'">
@@ -16,10 +22,29 @@
 </template>
 
 <script setup lang="ts">
-import type { ResourcesList, VideoItem } from '~/datas/types/resources'
+import type {
+  ResourcesList,
+  VideoItem,
+  AudioItem,
+  ImageItem,
+  TextItem
+} from '~/datas/types/resources'
 import useConvertTime from '~/common/utils/timeFormat'
 
 defineProps<{ resourcesList: ResourcesList }>()
+
+async function dragResources(
+  e: DragEvent,
+  item: VideoItem | AudioItem | ImageItem | TextItem
+) {
+  e.dataTransfer?.setData(
+    'fileInfo',
+    JSON.stringify({
+      source: item.source,
+      name: item.name
+    })
+  )
+}
 </script>
 
 <style lang="scss" scoped>

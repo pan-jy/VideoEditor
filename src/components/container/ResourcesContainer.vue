@@ -1,7 +1,7 @@
 <template>
   <el-menu class="menu" :collapse="true" :default-active="0">
     <el-menu-item
-      v-for="(menuItem, index) in menuList"
+      v-for="(menuItem, index) in sideBarMenu"
       :key="index"
       :index="index"
       @click="itemClick"
@@ -25,7 +25,7 @@
   <div class="resources" :class="{ 'resources--closed': isClosed }">
     <header class="resources-header">
       <span class="resources-header-title">
-        {{ menuList[activeIndex].title }}
+        {{ sideBarMenu[activeIndex].title }}
       </span>
       <div class="resources-header-icon">
         <el-icon
@@ -44,19 +44,18 @@
 </template>
 
 <script lang="ts" setup>
-import { menuList } from '~/datas/resources'
+import { sideBarMenu } from '~/datas/baseMenu'
 import { Fold, Expand, Refresh } from '@element-plus/icons-vue'
 import { useToggle } from '@vueuse/core'
 import { watch, ref, reactive, onMounted } from 'vue'
 import { getResources } from '~/request/apis/resources'
 import type { ResourcesList } from '~/datas/types/resources'
 
-const [isClosed, toggle] = useToggle()
-
 const props = defineProps<{
   width: number
 }>()
 
+const [isClosed, toggle] = useToggle()
 // 当视口宽度小于 1000 时自动收缩资源栏
 watch(
   () => props.width,
@@ -72,7 +71,7 @@ const allResources = reactive<ResourcesList[]>([])
 const refreshing = ref(false)
 async function refreshResources(index: number) {
   refreshing.value = true
-  allResources[index] = await getResources(menuList[index].type)
+  allResources[index] = await getResources(sideBarMenu[index].type)
   // 模拟
   setTimeout(() => {
     refreshing.value = false
@@ -86,7 +85,7 @@ async function itemClick(e: typeof import('element-plus/es')['ElMenuItem']) {
 }
 
 onMounted(async () => {
-  if (!isClosed.value) refreshResources(0)
+  refreshResources(0)
 })
 </script>
 
