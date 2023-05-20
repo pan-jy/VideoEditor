@@ -1,87 +1,74 @@
 <template>
-  <div v-for="resources in resourcesList" :key="resources.title">
-    <header>
-      <span>{{ resources.title }}</span>
-    </header>
-    <div
-      class="item"
-      v-for="item in resources.items"
-      :key="item.name"
-      draggable="true"
-      @dragstart="dragResources($event, item)"
-    >
-      <div class="item-non-audio" v-if="resources.type !== 'audio'">
-        <el-image class="item-non-audio-cover" :src="item.cover" lazy />
-        <span class="item-non-audio-time" v-if="resources.type === 'video'">
-          {{ useConvertTime((item as VideoItem).time) }}
-        </span>
+  <div class="resources" :class="{ 'resources--closed': isClosed }">
+    <header class="resources-header">
+      <span class="resources-header-title">
+        {{ title }}
+      </span>
+      <div class="resources-header-icon">
+        <el-icon :class="{ 'is-loading': isLoading }" @click="$emit('refresh')">
+          <Refresh />
+        </el-icon>
+        <el-icon @click="$emit('update:isClosed', !isClosed)"><Fold /></el-icon>
       </div>
-      <AudioItem v-else :audioItem="item" />
-    </div>
+    </header>
+    <main class="resources-main">
+      <div v-for="subList in resourcesList" :key="subList.title">
+        <ResourcesSubList :resourcesSubList="subList" />
+      </div>
+    </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import type {
-  ResourcesList,
-  VideoItem,
-  AudioItem,
-  ImageItem,
-  TextItem
-} from '~/datas/types/resources'
-import useConvertTime from '~/common/utils/timeFormat'
+import { Fold, Refresh } from '@element-plus/icons-vue'
+import type { ResourcesList } from '~/datas/types/resources'
+defineProps<{
+  isClosed: boolean
+  isLoading: boolean
+  title: string
+  resourcesList: ResourcesList
+}>()
 
-defineProps<{ resourcesList: ResourcesList }>()
-
-async function dragResources(
-  e: DragEvent,
-  item: VideoItem | AudioItem | ImageItem | TextItem
-) {
-  e.dataTransfer?.setData(
-    'fileInfo',
-    JSON.stringify({
-      source: item.source,
-      name: item.name
-    })
-  )
-}
+defineEmits(['update:isClosed', 'refresh'])
 </script>
 
 <style lang="scss" scoped>
 @import '~/styles/mixins.scss';
 
-header {
-  @include header;
+.resources {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 300px;
+  height: 100%;
+  overflow: hidden;
+  border-right: solid 1px var(--ep-border-color);
+  transition: all 0.5s ease;
 
-  box-sizing: content-box;
-  margin: 0 10px;
-  font-size: 15px;
-}
+  &--closed {
+    width: 0;
+    color: transparent;
+    border-width: 0;
+  }
 
-.item {
-  padding: 10px 20px;
-  cursor: pointer;
+  &-header {
+    @include header;
 
-  &-non-audio {
-    position: relative;
-    max-width: 66%;
+    justify-content: space-between;
+    font-size: 18px;
 
-    &-cover {
-      border: 2px solid var(--ep-color-primary-light-9);
+    .ep-icon {
+      cursor: pointer;
 
-      &:hover {
-        border-color: var(--ep-color-primary-light-3);
-        transform: scale(1.02);
+      &:not(:first-of-type) {
+        margin-left: 10px;
       }
     }
+  }
 
-    &-time {
-      position: absolute;
-      right: 6px;
-      bottom: 6px;
-      font-size: 15px;
-      color: var(--ep-text-color-regular);
-    }
+  &-main {
+    flex: 1;
+    overflow: auto;
   }
 }
 </style>

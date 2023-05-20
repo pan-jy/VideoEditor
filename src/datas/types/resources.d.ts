@@ -34,7 +34,7 @@ type ImageItem = Omit<
   'fps' | 'frameCount' | 'templateId' | 'time'
 >
 
-type ResourcesList = Array<
+type ResourcesSubList =
   | {
       title: string
       type: 'video'
@@ -55,12 +55,14 @@ type ResourcesList = Array<
       type: 'image'
       items: Array<ImageItem>
     }
->
+
+type ResourcesList = Array<ResourcesSubList>
 
 export type {
   MenuItem,
   ResourcesItem,
   ResourcesList,
+  ResourcesSubList,
   VideoItem,
   AudioItem,
   ImageItem,
