@@ -1,6 +1,18 @@
-export default function (time: number) {
-  const seconds = Math.floor(time / 1000)
-  const minutes = Math.floor(seconds / 60)
-  const remainingSeconds = seconds % 60
-  return `${('0' + minutes).slice(-2)}:${('0' + remainingSeconds).slice(-2)}`
+function formatTime(time: number) {
+  let second = Math.ceil(time / 1000)
+  const s = second % 60
+  second = Math.floor(second / 60)
+  const m = second % 60
+  second = Math.floor(second / 60)
+  const h = second % 60
+  return {
+    s,
+    m,
+    h,
+    str: `${h === 0 ? '' : `${h < 10 ? '0' : ''}${h}:`}${
+      m < 10 ? '0' : ''
+    }${m}:${s < 10 ? '0' : ''}${s}`
+  }
 }
+
+export { formatTime }

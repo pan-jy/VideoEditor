@@ -30,7 +30,8 @@
     >
       <aside class="track-main-aside"></aside>
       <article class="track-main-content">
-        <div class="info">
+        <TimeLine />
+        <div class="empty-info">
           <el-icon size="20"><Files /></el-icon>
           <span>将资源拖拽到这里，开始编辑作品吧~</span>
         </div>
@@ -47,20 +48,21 @@ import { fetchFile } from '~/common/utils/fetchFile'
 
 const multiple = ref(1)
 const trackContainer = ref<HTMLDivElement>()
-
+const files = ref<File[]>([])
 async function onDrop(e: DragEvent) {
   e.preventDefault()
   // 获取拖动的文件
   const fileInfo = e.dataTransfer?.getData('fileInfo')
-  const files = Array.from(e.dataTransfer?.files ?? [])
   if (fileInfo) {
     const fileInfoJSON = JSON.parse(fileInfo) as {
       source: string
       name: string
     }
-    files[0] = await fetchFile(fileInfoJSON.source, fileInfoJSON.name)
+    files.value.push(await fetchFile(fileInfoJSON.source, fileInfoJSON.name))
+  } else {
+    console.log(e.dataTransfer?.files)
+    files.value.push(...Array.from(e.dataTransfer?.files ?? []))
   }
-  console.log(files)
 }
 </script>
 
@@ -110,7 +112,7 @@ async function onDrop(e: DragEvent) {
   }
 }
 
-.info {
+.empty-info {
   position: absolute;
   top: 0;
   right: 0;

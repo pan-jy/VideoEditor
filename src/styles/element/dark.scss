@@ -7,6 +7,6 @@ $--colors: (
 @forward 'element-plus/theme-chalk/src/dark/var.scss' with (
   $colors: $--colors,
   $bg-color: (
-    '': #121212
+    '': #111827
   )
 );

@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { Fold, Refresh } from '@element-plus/icons-vue'
-import type { ResourcesList } from '~/datas/types/resources'
+import type { ResourcesList } from '~/types/resources'
 defineProps<{
   isClosed: boolean
   isLoading: boolean

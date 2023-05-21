@@ -17,7 +17,7 @@
 import { sideBarMenu } from '~/datas/baseMenu'
 import { watch, ref, reactive } from 'vue'
 import { getResources } from '~/request/apis/resources'
-import type { ResourcesList } from '~/datas/types/resources'
+import type { ResourcesList } from '~/types/resources'
 
 const props = defineProps<{
   width: number
@@ -29,7 +29,6 @@ watch(
   () => props.width,
   (val) => {
     isClosed.value = val <= 1000
-    console.log(isClosed.value)
   },
   { immediate: true }
 )

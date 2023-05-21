@@ -7,7 +7,7 @@ import {
   ArrowRightBold,
   DeleteFilled
 } from '@element-plus/icons-vue'
-import type { MenuItem } from './types/resources'
+import type { MenuItem } from '../types/resources'
 
 const sideBarMenu: MenuItem[] = [
   {

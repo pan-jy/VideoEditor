@@ -18,6 +18,10 @@ html,
   overflow: hidden;
 }
 
+html.dark {
+  background-color: #111827;
+}
+
 ::-webkit-scrollbar {
   width: 3px;
 }

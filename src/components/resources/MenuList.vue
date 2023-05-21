@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import { Expand } from '@element-plus/icons-vue'
 import { toRaw } from 'vue'
-import type { MenuItem } from '~/datas/types/resources'
+import type { MenuItem } from '~/types/resources'
 const props = defineProps<{
   activeIndex: number
   menuList: MenuItem[]

@@ -15,7 +15,7 @@
         class="item-non-audio-time"
         v-if="resourcesSubList.type === 'video'"
       >
-        {{ useConvertTime((item as VideoItem).time) }}
+        {{ formatTime((item as VideoItem).time).str }}
       </span>
     </div>
     <AudioItem v-else :audioItem="item" />
@@ -29,8 +29,8 @@ import type {
   AudioItem,
   ImageItem,
   TextItem
-} from '~/datas/types/resources'
-import useConvertTime from '~/common/utils/timeFormat'
+} from '~/types/resources'
+import { formatTime } from '~/common/utils/timeFormat'
 
 defineProps<{ resourcesSubList: ResourcesSubList }>()
 

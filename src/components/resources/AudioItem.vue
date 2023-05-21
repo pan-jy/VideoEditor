@@ -4,15 +4,15 @@
     <el-icon size="40" class="play-icon"><VideoPlay /></el-icon>
     <main class="audio-item-info">
       <span>{{ audioItem.name }}</span>
-      <span>{{ useConvertTime(audioItem.time) }}</span>
+      <span>{{ formatTime(audioItem.time).str }}</span>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { AudioItem } from '~/datas/types/resources'
+import type { AudioItem } from '~/types/resources'
 import { VideoPlay } from '@element-plus/icons-vue'
-import useConvertTime from '~/common/utils/timeFormat'
+import { formatTime } from '~/common/utils/timeFormat'
 
 defineProps<{ audioItem: AudioItem }>()
 </script>
