@@ -1,5 +1,8 @@
 <template>
-  <div class="resources" :class="{ 'resources--closed': isClosed }">
+  <div
+    class="resources"
+    :class="{ 'resources--closed': sideBarState.isClosed }"
+  >
     <header class="resources-header">
       <span class="resources-header-title">
         {{ title }}
@@ -8,7 +11,9 @@
         <el-icon :class="{ 'is-loading': isLoading }" @click="$emit('refresh')">
           <Refresh />
         </el-icon>
-        <el-icon @click="$emit('update:isClosed', !isClosed)"><Fold /></el-icon>
+        <el-icon @click="sideBarState.setIsClosed()">
+          <Fold />
+        </el-icon>
       </div>
     </header>
     <main class="resources-main">
@@ -22,14 +27,16 @@
 <script setup lang="ts">
 import { Fold, Refresh } from '@element-plus/icons-vue'
 import type { ResourcesList } from '~/types/resources'
+import { useSideBarState } from '~/stores/sideBarState'
+const sideBarState = useSideBarState()
+
 defineProps<{
-  isClosed: boolean
   isLoading: boolean
   title: string
   resourcesList: ResourcesList
 }>()
 
-defineEmits(['update:isClosed', 'refresh'])
+defineEmits(['refresh'])
 </script>
 
 <style lang="scss" scoped>

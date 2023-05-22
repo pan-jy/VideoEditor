@@ -13,8 +13,8 @@
       <div class="track-header-right">
         <el-slider
           :max="10"
-          :min="1"
-          v-model="multiple"
+          :min="0"
+          v-model="scale"
           show-input
           size="small"
           :format-tooltip="(v: number) => `帧数 X ${v}`"
@@ -25,12 +25,12 @@
     <main
       class="track-main"
       ref="trackContainer"
-      @dragover="(e) => e.preventDefault()"
-      @drop="onDrop"
+      @dragover.prevent
+      @drop.prevent="onDrop"
     >
       <aside class="track-main-aside"></aside>
-      <article class="track-main-content">
-        <TimeLine />
+      <article class="track-main-content" @wheel="zoomScale">
+        <TimeLine :scale="scale" />
         <div class="empty-info">
           <el-icon size="20"><Files /></el-icon>
           <span>将资源拖拽到这里，开始编辑作品吧~</span>
@@ -46,11 +46,10 @@ import { trackHeaderMenu } from '~/datas/baseMenu'
 import { ref } from 'vue'
 import { fetchFile } from '~/common/utils/fetchFile'
 
-const multiple = ref(1)
+const scale = ref(1)
 const trackContainer = ref<HTMLDivElement>()
 const files = ref<File[]>([])
 async function onDrop(e: DragEvent) {
-  e.preventDefault()
   // 获取拖动的文件
   const fileInfo = e.dataTransfer?.getData('fileInfo')
   if (fileInfo) {
@@ -60,8 +59,17 @@ async function onDrop(e: DragEvent) {
     }
     files.value.push(await fetchFile(fileInfoJSON.source, fileInfoJSON.name))
   } else {
-    console.log(e.dataTransfer?.files)
     files.value.push(...Array.from(e.dataTransfer?.files ?? []))
+  }
+}
+
+function zoomScale(e: WheelEvent) {
+  e.preventDefault()
+
+  if (e.ctrlKey || e.metaKey) {
+    if (e.deltaY === 0) return
+    e.deltaY > 0 ? scale.value-- : scale.value++
+    console.log(scale.value)
   }
 }
 </script>

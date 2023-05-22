@@ -4,7 +4,7 @@
       v-for="(menuItem, index) in menuList"
       :key="index"
       :index="index"
-      @click="test(index)"
+      @click="itemClick(index)"
     >
       <div class="menu-item">
         <el-icon>
@@ -17,8 +17,8 @@
     <div style="flex-grow: 1"></div>
     <!-- 列表收起时底部显示 -->
     <el-menu-item
-      v-show="isClosed"
-      @click="$emit('update:isClosed', !isClosed)"
+      v-show="sideBarState.isClosed"
+      @click="sideBarState.setIsClosed()"
     >
       <div class="menu-item">
         <el-icon style="cursor: pointer"><Expand /></el-icon>
@@ -31,16 +31,18 @@
 import { Expand } from '@element-plus/icons-vue'
 import { toRaw } from 'vue'
 import type { MenuItem } from '~/types/resources'
+import { useSideBarState } from '~/stores/sideBarState'
+const sideBarState = useSideBarState()
+
 const props = defineProps<{
   activeIndex: number
   menuList: MenuItem[]
-  isClosed: boolean
 }>()
-const emit = defineEmits(['update:activeIndex', 'update:isClosed'])
+const emit = defineEmits(['update:activeIndex'])
 let oldIdx = toRaw(props.activeIndex)
-function test(index: number) {
+function itemClick(index: number) {
   emit('update:activeIndex', index)
-  emit('update:isClosed', oldIdx === index ? !props.isClosed : false)
+  sideBarState.setIsClosed(oldIdx === index ? !sideBarState.isClosed : false)
   oldIdx = index
 }
 </script>

@@ -10,15 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  computed,
-  nextTick,
-  onMounted,
-  reactive,
-  ref,
-  watch,
-  onUnmounted
-} from 'vue'
+import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 import { drawTimeLine } from '~/common/utils/drawTimeLine'
 import type {
   UserConfig,
@@ -27,6 +19,7 @@ import type {
   CanvasTextBaseline
 } from '~/types/canvas'
 import { isDark } from '~/common/composables/useDark'
+import { useSideBarState } from '~/stores/sideBarState'
 
 const props = withDefaults(
   defineProps<{
@@ -38,10 +31,10 @@ const props = withDefaults(
   {
     start: 0,
     step: 30,
-    scale: 0,
+    scale: 1,
     focusPosition: () => ({
       start: 0,
-      end: 10
+      end: 0
     })
   }
 )
@@ -81,7 +74,8 @@ function updateTimeLine() {
   )
 }
 function setCanvasContext() {
-  canvasContext = timeLine.value?.getContext('2d') as CanvasRenderingContext2D
+  if (timeLine.value === undefined) return
+  canvasContext = timeLine.value.getContext('2d') as CanvasRenderingContext2D
   canvasContext.font = `${
     canvasConfigs.value.textSize * canvasConfigs.value.ratio
   }px -apply-system, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif`
@@ -92,15 +86,13 @@ function setCanvasContext() {
 
 function setCanvasRect() {
   if (canvasContainer.value === undefined) return
-  else {
-    const { width, height } = canvasContainer.value.getBoundingClientRect()
-    canvasAttr.width = width * canvasConfigs.value.ratio
-    canvasAttr.height = height * canvasConfigs.value.ratio
-    nextTick(() => {
-      setCanvasContext()
-      updateTimeLine()
-    })
-  }
+  const { width, height } = canvasContainer.value.getBoundingClientRect()
+  canvasAttr.width = width * canvasConfigs.value.ratio
+  canvasAttr.height = height * canvasConfigs.value.ratio
+  nextTick(() => {
+    setCanvasContext()
+    updateTimeLine()
+  })
 }
 
 onMounted(() => {
@@ -108,11 +100,16 @@ onMounted(() => {
 })
 watch(props, updateTimeLine)
 watch(canvasConfigs, updateTimeLine)
+const sideBarState = useSideBarState()
+watch(
+  () => sideBarState.isClosed,
+  () => {
+    setTimeout(() => {
+      setCanvasRect()
+    }, 500)
+  }
+)
 window.addEventListener('resize', setCanvasRect, false)
-
-onUnmounted(() => {
-  window.removeEventListener('resize', setCanvasRect)
-})
 </script>
 
 <style lang="scss" scoped>

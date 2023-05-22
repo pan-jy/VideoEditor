@@ -9,22 +9,22 @@ import type { UserConfig, CanvasConfig } from '~/types/canvas'
 const getGridSize = (scale: number): number => {
   const scaleNum = new Map([
     // 切换比例：一小格为 1 帧
-    [100, 100],
-    [90, 50],
+    [10, 100],
+    [9, 50],
     // 切换比例：一小格为 1/step 秒, 一大格为 1 秒
-    [80, 20],
-    [70, 10],
+    [8, 20],
+    [7, 10],
     // 切换比例：一小格为 1 秒, 一大格为 10 秒
-    [60, 80],
-    [50, 40],
-    [40, 20],
-    [30, 10],
+    [6, 80],
+    [5, 40],
+    [4, 20],
+    [3, 10],
     // 切换比例：一小格为 6 秒, 一大格为 1 分钟
-    [20, 40],
-    [10, 25],
+    [2, 40],
+    [1, 25],
     [0, 10]
   ])
-  return scaleNum.get(Math.floor(scale / 10) * 10) || 100
+  return scaleNum.get(scale) || 100
 }
 /**
  * 获取当前scale下的单元格像素
@@ -35,11 +35,11 @@ const getGridSize = (scale: number): number => {
 const getGridPixel = (scale: number, frameCount: number) => {
   const gridPixel = getGridSize(scale)
   let trackWidth = gridPixel * frameCount
-  if (scale < 70) {
+  if (scale < 7) {
     // 1秒一格
     trackWidth = trackWidth / 30
   }
-  if (scale < 30) {
+  if (scale < 3) {
     // 6秒一格
     trackWidth = trackWidth / 6
   }
@@ -49,10 +49,10 @@ const getGridPixel = (scale: number, frameCount: number) => {
  * 根据缩放比调整 step ( setp 个小单元格构成一个大单元格)
  * @param scale 时间轴缩放比
  * @param frameStep 步进，与视频 fps 同步
- * @returns 当前缩放比对应的 step (默认为 10， 缩放比大于 60h 后为视频的 fps 值)
+ * @returns 当前缩放比对应的 step (默认为 10， 缩放比大于 6 后为视频的 fps 值)
  */
 const getStep = (scale: number, frameStep: number): number => {
-  return scale > 60 ? frameStep : 10
+  return scale > 6 ? frameStep : 10
 }
 /**
  * 获取每一大单元格的刻度值
@@ -63,17 +63,17 @@ const getStep = (scale: number, frameStep: number): number => {
 const getLongText = (largeUnitIndex: number, scale: number) => {
   // 一个大单元格为 1 秒
   let time = largeUnitIndex
-  if (scale < 30) {
+  if (scale < 3) {
     // 一个大单元格为 1 分钟
     time *= 60
-  } else if (scale < 70) {
+  } else if (scale < 7) {
     // 一个大单元格为 10 秒
     time *= 10
   }
   return formatTime(time * 1000).str
 }
 /**
- * 获取每一小单元格的刻度值（只有缩放比大于 90 才有小单元格刻度）
+ * 获取每一小单元格的刻度值（只有缩放比大于 9 才有小单元格刻度）
  * @param smallUnitIndex 当前小单元格下标
  * @param step 步进值
  * @param scale 时间轴缩放比
@@ -81,16 +81,12 @@ const getLongText = (largeUnitIndex: number, scale: number) => {
  */
 const getShortText = (smallUnitIndex: number, step: number, scale: number) => {
   const index = smallUnitIndex % step
-  return scale >= 90
+  return scale >= 9
     ? index === 0
       ? ''
       : `${index < 10 ? '0' : ''}${index}f`
     : ''
 }
-/**
- * 线条宽度，默认 0.5px
- */
-const lineWidth = 0.5
 
 /**
  * 获取选中点的帧坐标
@@ -101,15 +97,15 @@ const lineWidth = 0.5
  */
 const getSelectFrame = (offsetX: number, scale: number, frameStep: number) => {
   const size = getGridSize(scale)
-  if (scale < 70) {
+  if (scale < 7) {
     // 一个单元格为 1 秒
     offsetX *= frameStep
   }
-  if (scale < 30) {
+  if (scale < 3) {
     // 一个单元格为 6 秒
     offsetX *= 6
   }
-  return Math.floor(offsetX / size) + (scale < 70 ? 0 : 1)
+  return Math.floor(offsetX / size) + (scale < 7 ? 0 : 1)
 }
 /**
  * 使用 canvas 绘制时间轴
@@ -136,6 +132,7 @@ const drawTimeLine = (
     longColor,
     shortColor
   } = canvasConfigs
+  const lineWidth = 0.5
   const step = getStep(scale, frameStep)
 
   // 初始化画布
@@ -161,12 +158,12 @@ const drawTimeLine = (
   if (focusPosition) {
     let fStart = focusPosition.start
     let fCount = focusPosition.end - focusPosition.start
-    if (scale < 70) {
+    if (scale < 7) {
       // 一个单元格为 1 秒
       fStart = fStart / 30
       fCount = fCount / 30
     }
-    if (scale < 30) {
+    if (scale < 3) {
       // 一个单元格为 6 秒
       fStart = fStart / 6
       fCount = fCount / 6
