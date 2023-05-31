@@ -13,6 +13,7 @@
 <style lang="scss" scoped>
 .attribute {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   width: 300px;
 }

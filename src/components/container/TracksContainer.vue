@@ -31,9 +31,12 @@
       <aside class="track-main-aside"></aside>
       <article class="track-main-content" @wheel="zoomScale">
         <TimeLine :scale="scale" />
-        <div class="empty-info">
+        <div class="empty-info" v-if="files.length === 0">
           <el-icon size="20"><Files /></el-icon>
           <span>将资源拖拽到这里，开始编辑作品吧~</span>
+        </div>
+        <div class="files" v-else>
+          <TrackItem v-for="file in files" :key="file.name" :file="file" />
         </div>
       </article>
     </main>
@@ -56,17 +59,18 @@ async function onDrop(e: DragEvent) {
     const fileInfoJSON = JSON.parse(fileInfo) as {
       source: string
       name: string
+      type: string
     }
     files.value.push(await fetchFile(fileInfoJSON.source, fileInfoJSON.name))
   } else {
     files.value.push(...Array.from(e.dataTransfer?.files ?? []))
   }
+  // console.log(files.value)
 }
 
 function zoomScale(e: WheelEvent) {
-  e.preventDefault()
-
   if (e.ctrlKey || e.metaKey) {
+    e.preventDefault()
     if (e.deltaY === 0) return
     e.deltaY > 0 ? scale.value-- : scale.value++
     console.log(scale.value)
@@ -78,10 +82,8 @@ function zoomScale(e: WheelEvent) {
 .track {
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
   width: 100%;
-  height: 400px;
-  min-height: 300px;
+  height: 300px;
 
   &-header {
     display: flex;
@@ -103,8 +105,9 @@ function zoomScale(e: WheelEvent) {
 
   &-main {
     display: flex;
+    width: 100%;
     height: 100%;
-    overflow-y: scroll;
+    overflow-x: hidden;
 
     &-aside {
       width: 50px;
@@ -115,7 +118,7 @@ function zoomScale(e: WheelEvent) {
     &-content {
       position: relative;
       flex: 1;
-      overflow-x: scroll;
+      overflow: auto;
     }
   }
 }
