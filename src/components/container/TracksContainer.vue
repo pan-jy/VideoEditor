@@ -1,82 +1,9 @@
 <template>
   <div class="track">
-    <header class="track-header">
-      <div class="track-header-left">
-        <el-tooltip
-          v-for="item in trackHeaderMenu"
-          :key="item.title"
-          :content="item.title"
-        >
-          <el-button :icon="item.icon" circle />
-        </el-tooltip>
-      </div>
-      <div class="track-header-right">
-        <el-slider
-          :max="10"
-          :min="0"
-          v-model="scale"
-          show-input
-          size="small"
-          :format-tooltip="(v: number) => `帧数 X ${v}`"
-        />
-      </div>
-    </header>
-
-    <main
-      class="track-main"
-      ref="trackContainer"
-      @dragover.prevent
-      @drop.prevent="onDrop"
-    >
-      <aside class="track-main-aside"></aside>
-      <article class="track-main-content" @wheel="zoomScale">
-        <TimeLine :scale="scale" />
-        <div class="empty-info" v-if="files.length === 0">
-          <el-icon size="20"><Files /></el-icon>
-          <span>将资源拖拽到这里，开始编辑作品吧~</span>
-        </div>
-        <div class="files" v-else>
-          <TrackItem v-for="file in files" :key="file.name" :file="file" />
-        </div>
-      </article>
-    </main>
+    <TrackHeader />
+    <TrackList />
   </div>
 </template>
-
-<script setup lang="ts">
-import { Files } from '@element-plus/icons-vue'
-import { trackHeaderMenu } from '~/datas/baseMenu'
-import { ref } from 'vue'
-import { fetchFile } from '~/common/utils/fetchFile'
-
-const scale = ref(1)
-const trackContainer = ref<HTMLDivElement>()
-const files = ref<File[]>([])
-async function onDrop(e: DragEvent) {
-  // 获取拖动的文件
-  const fileInfo = e.dataTransfer?.getData('fileInfo')
-  if (fileInfo) {
-    const fileInfoJSON = JSON.parse(fileInfo) as {
-      source: string
-      name: string
-      type: string
-    }
-    files.value.push(await fetchFile(fileInfoJSON.source, fileInfoJSON.name))
-  } else {
-    files.value.push(...Array.from(e.dataTransfer?.files ?? []))
-  }
-  // console.log(files.value)
-}
-
-function zoomScale(e: WheelEvent) {
-  if (e.ctrlKey || e.metaKey) {
-    e.preventDefault()
-    if (e.deltaY === 0) return
-    e.deltaY > 0 ? scale.value-- : scale.value++
-    console.log(scale.value)
-  }
-}
-</script>
 
 <style lang="scss" scoped>
 .track {
@@ -84,69 +11,5 @@ function zoomScale(e: WheelEvent) {
   flex-direction: column;
   width: 100%;
   height: 300px;
-
-  &-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 50px;
-    padding: 0 20px;
-    border-bottom: 1px solid var(--ep-border-color);
-
-    .ep-button {
-      background-color: transparent;
-      border: none;
-    }
-
-    &-right {
-      width: 30%;
-    }
-  }
-
-  &-main {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    overflow-x: hidden;
-
-    &-aside {
-      width: 50px;
-      height: 100%;
-      border-right: 1px solid var(--ep-border-color);
-    }
-
-    &-content {
-      position: relative;
-      flex: 1;
-      overflow: auto;
-    }
-  }
-}
-
-.empty-info {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 70%;
-  height: 100px;
-  margin: auto;
-  font-size: 16px;
-  background-color: var(--ep-fill-color);
-  border: 2px solid var(--ep-border-color);
-  border-radius: 10px;
-
-  i {
-    margin-right: 20px;
-    transform: translateY(2px);
-  }
-
-  &:hover {
-    border: 2px dashed var(--ep-color-primary);
-  }
 }
 </style>

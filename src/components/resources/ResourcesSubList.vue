@@ -9,8 +9,13 @@
     draggable="true"
     @dragstart="dragResources($event, item)"
   >
-    <div class="item-non-audio" v-if="resourcesSubList.type !== 'audio'">
-      <el-image class="item-non-audio-cover" :src="item.cover" />
+    <AudioItem v-if="resourcesSubList.type === 'audio'" :audioItem="item" />
+    <TextItem v-else-if="resourcesSubList.type === 'text'" :textItem="item" />
+    <div class="item-non-audio" v-else>
+      <el-image
+        class="item-non-audio-cover"
+        :src="(item as VideoItem | ImageItem).cover"
+      />
       <span
         class="item-non-audio-time"
         v-if="resourcesSubList.type === 'video'"
@@ -18,7 +23,6 @@
         {{ formatTime((item as VideoItem).time).str }}
       </span>
     </div>
-    <AudioItem v-else :audioItem="item" />
   </div>
 </template>
 

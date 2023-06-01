@@ -1,5 +1,5 @@
 import type { MockMethod } from 'vite-plugin-mock'
-import type { ResourcesList } from '../src/datas/types/resources'
+import type { ResourcesList } from '../src/types/resources'
 const mockMethods: MockMethod[] = [
   {
     url: '/api/getResources',
@@ -129,64 +129,28 @@ const mockMethods: MockMethod[] = [
             type: 'text',
             items: [
               {
-                name: '文字1',
+                name: 'CherryBombOne',
                 templateId: 0,
-                cover: '/image/text/text_0.png',
-                source: '/image/text/text_0.png'
+                source: '/text/CherryBombOne-Regular.ttf',
+                format: 'truetype'
               },
               {
-                name: '文字2',
+                name: '刘建毛笔草书',
                 templateId: 0,
-                cover: '/image/text/text_0.png',
-                source: '/image/text/text_0.png'
+                source: '/text/LiuJianMaoCao-Regular.ttf',
+                format: 'truetype'
               },
               {
-                name: '文字3',
+                name: 'Nabla彩色可变字体',
                 templateId: 0,
-                cover: '/image/text/text_0.png',
-                source: '/image/text/text_0.png'
+                source: '/text/Nabla彩色可变字体.woff2',
+                format: 'woff2'
               },
               {
-                name: '文字4',
+                name: 'MaShanZheng',
                 templateId: 0,
-                cover: '/image/text/text_0.png',
-                source: '/image/text/text_0.png'
-              },
-              {
-                name: '文字5',
-                templateId: 0,
-                cover: '/image/text/text_0.png',
-                source: '/image/text/text_0.png'
-              },
-              {
-                name: '文字6',
-                templateId: 1,
-                cover: '/image/text/text_1.png',
-                source: '/image/text/text_1.png'
-              },
-              {
-                name: '文字7',
-                templateId: 1,
-                cover: '/image/text/text_1.png',
-                source: '/image/text/text_1.png'
-              },
-              {
-                name: '文字8',
-                templateId: 1,
-                cover: '/image/text/text_1.png',
-                source: '/image/text/text_1.png'
-              },
-              {
-                name: '文字9',
-                templateId: 1,
-                cover: '/image/text/text_1.png',
-                source: '/image/text/text_1.png'
-              },
-              {
-                name: '文字10',
-                templateId: 1,
-                cover: '/image/text/text_1.png',
-                source: '/image/text/text_1.png'
+                source: '/text/MaShanZheng-Regular.ttf',
+                format: 'truetype'
               }
             ]
           }

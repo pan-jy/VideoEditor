@@ -27,7 +27,7 @@ type AudioItem = Pick<
   'cover' | 'time' | 'format' | 'name' | 'source'
 >
 
-type TextItem = Pick<ResourcesItem, 'name' | 'templateId' | 'cover' | 'source'>
+type TextItem = Pick<ResourcesItem, 'name' | 'templateId' | 'source' | 'format'>
 
 type ImageItem = Omit<
   ResourcesItem,
