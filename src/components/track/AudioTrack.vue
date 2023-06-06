@@ -6,7 +6,6 @@
 
 <style lang="scss" scoped>
 .audio {
-  height: 3rem;
   background-color: skyblue;
 }
 </style>

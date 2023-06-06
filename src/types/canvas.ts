@@ -22,7 +22,7 @@ interface CanvasConfig {
   textColor: string // 文字颜色
   subTextColor: string // 小文字颜色
   focusColor: string // 选中元素区间
-  longColor: string // 底线颜色
+  lineColor: string // 底线颜色
 }
 interface UserConfig {
   start: number // 开始坐标
@@ -36,4 +36,4 @@ interface UserConfig {
   }
 }
 
-export { CanvasConfig, UserConfig, CanvasTextBaseline, CanvasTextAlign }
+export type { CanvasConfig, UserConfig, CanvasTextBaseline, CanvasTextAlign }

@@ -6,7 +6,6 @@
 
 <style lang="scss" scoped>
 .video {
-  height: 4rem;
   background-color: lawngreen;
 }
 </style>

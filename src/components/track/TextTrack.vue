@@ -1,12 +1,11 @@
 <template>
-  <div class="font">font</div>
+  <div class="text">font</div>
 </template>
 
 <script setup lang="ts"></script>
 
 <style lang="scss" scoped>
-.font {
-  height: 1.5rem;
+.text {
   background-color: sandybrown;
 }
 </style>

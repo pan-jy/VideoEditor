@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { trackHeaderMenu } from '~/datas/baseMenu'
+import { trackHeaderMenu } from '~/config/baseMenu'
 import { useTrackState } from '~/stores/trackState'
 
 const trackState = useTrackState()

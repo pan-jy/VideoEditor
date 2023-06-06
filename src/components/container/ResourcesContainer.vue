@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts" setup>
-import { sideBarMenu } from '~/datas/baseMenu'
+import { sideBarMenu } from '~/config/baseMenu'
 import { watch, ref, reactive } from 'vue'
 import { getResources } from '~/request/apis/resources'
 import type { ResourcesList } from '~/types/resources'

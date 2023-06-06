@@ -6,7 +6,6 @@
 
 <style lang="scss" scoped>
 .image {
-  height: 1.5rem;
   background-color: pinK;
 }
 </style>
