@@ -1,10 +1,13 @@
 <template>
   <aside class="icon-list" ref="iconList">
     <div
-      v-for="item in showList"
-      :key="item.id"
+      v-for="(item, index) in trackList"
+      :key="index"
       class="icon"
-      :style="{ height: trackHeight[item.type] }"
+      :style="{
+        height: trackHeight[item.type],
+        backgroundColor: item.isMian ? 'var(--ep-color-primary-light-8)' : ''
+      }"
     >
       <el-icon>
         <component :is="iconMap.get(item.type)" />
@@ -17,10 +20,10 @@
 import { ref, watch } from 'vue'
 import { sideBarMenu } from '~/config/baseMenu'
 import { trackHeight } from '~/config/tracks'
-import { TrackItem } from '~/types/tracks'
+import { TrackList } from '~/types/tracks'
 
 const props = defineProps<{
-  showList: Array<TrackItem>
+  trackList: TrackList
   scrollTop: number
 }>()
 

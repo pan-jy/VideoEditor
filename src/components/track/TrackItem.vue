@@ -1,8 +1,9 @@
 <template>
   <component
-    :is="componentMap.get(trackItem.type) as never"
-    :style="{ height: trackHeight[trackItem.type] }"
-    style="margin: 5px 0"
+    :is="componentMap[trackItem.type] as never"
+    style="height: 100%"
+    :trackItem="trackItem"
+    draggable="true"
   />
 </template>
 
@@ -12,16 +13,15 @@ import ImageTrack from './ImageTrack.vue'
 import TextTrack from './TextTrack.vue'
 import VideoTrack from './VideoTrack.vue'
 import { TrackItem } from '~/types/tracks'
-import { trackHeight } from '~/config/tracks'
 
 defineProps<{
   trackItem: TrackItem
 }>()
 
-const componentMap = new Map([
-  ['video', VideoTrack],
-  ['audio', AudioTrack],
-  ['text', TextTrack],
-  ['image', ImageTrack]
-])
+const componentMap = {
+  video: VideoTrack,
+  audio: AudioTrack,
+  text: TextTrack,
+  image: ImageTrack
+}
 </script>

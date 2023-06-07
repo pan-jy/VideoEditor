@@ -1,8 +1,11 @@
 <template>
-  <div class="image">image</div>
+  <div class="image">{{ trackItem.id }}</div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ImageTrackItem } from '~/types/tracks'
+defineProps<{ trackItem: ImageTrackItem }>()
+</script>
 
 <style lang="scss" scoped>
 .image {

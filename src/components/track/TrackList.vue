@@ -1,81 +1,94 @@
 <template>
-  <div
-    class="track-list"
-    ref="trackContainer"
-    @dragover.prevent
-    @drop.prevent="onDrop"
-  >
-    <IconList :showList="showList" :scrollTop="scrollTop" />
-    <article class="track-list-content" @wheel="zoomScale" @scroll="onScroll">
+  <div class="track-list">
+    <IconList :trackList="trackList" :scrollTop="scrollTop" />
+    <article
+      class="track-list-content"
+      @dragover.prevent="onDragOverTrackList"
+      @drop.prevent="onDrop"
+      @wheel="zoomScale"
+      @scroll="onScroll"
+      @dragleave="isDragging = false"
+    >
       <TimeLine :scale="trackState.scale" />
       <div class="empty-info" v-if="trackList.length === 0">
         <el-icon size="20"><Files /></el-icon>
         <span>将资源拖拽到这里，开始编辑作品吧~</span>
       </div>
       <div class="tracks" v-else>
-        <TrackItem
-          v-for="trackItem in showList"
-          :key="trackItem.id"
-          :trackItem="trackItem"
+        <TrackLine
+          @dragover.prevent="onDragOverTrackLine"
+          v-for="(trackLine, index) in trackList"
+          :key="index"
+          :line-index="index"
+          el-name="TrackLine"
+          :trackLine="trackLine"
+          :class="{ 'info-line-bottom': lineIndex === index && isDragging }"
         />
-        <!-- <div class="tracks-item tracks-imgAndText">
-          <div
-            class="track-item"
-            v-for="trackItem in trackList[idxMap.image]?.list"
-            :key="trackItem.id"
-          >
-            <ImageTrack v-if="trackItem.type === 'image'" />
-            <TextTrack v-else-if="trackItem.type === 'text'" />
-          </div>
-        </div>
-        <div class="tracks-item track-item tracks-video">video</div>
-        <div class="tracks-item tracks-audio">
-          <AudioTrack
-            class="track-item"
-            v-for="trackItem in trackList[idxMap.audio]?.list"
-            :key="trackItem.id"
-          />
-        </div> -->
       </div>
+      <div
+        v-show="trackList.length > 0 && isDragging"
+        class="info-line-left"
+        :style="{ left: `${offsetX}px`, top: `${scrollTop}px` }"
+      />
     </article>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Files } from '@element-plus/icons-vue'
-import { ref, computed } from 'vue'
+import { ref, watch } from 'vue'
 import { fetchFile } from '~/common/utils/fetchFile'
 import { useTrackState } from '~/stores/trackState'
-import type { TrackItem, TrackList, TrackType } from '~/types/tracks'
+import type { TrackItem, TrackLine, TrackList, TrackType } from '~/types/tracks'
+import { getElName, getOffsetX } from '~/common/utils/getTrackElInfo'
+import { getResourcesType } from '~/common/utils/getResourcesInfo'
 import {
   ImageTrackItem,
   TextTrackItem,
   VideoTrackItem,
   AudioTrackItem,
-  idxMap
+  trackOrder
 } from '~/config/tracks'
-import { getResourcesType } from '~/common/utils/getResourcesInfo'
 
 const trackState = useTrackState()
 
-const trackContainer = ref<HTMLDivElement>()
 const trackList = ref<TrackList>([])
-const showList = computed(() => {
-  const list: Array<TrackItem> = []
-  trackList.value?.forEach((item) => {
-    list.push(...item.list)
+// 监听列表变化，对列表进行排序
+watch(trackList.value, (trackList) => {
+  trackList.sort((a, b) => trackOrder[a.type] - trackOrder[b.type])
+  trackList.forEach((trackLine) => {
+    trackLine.list.sort((a, b) => a.start - b.start)
   })
-  return list
 })
-
+/**
+ * 将文件转为对应的对象
+ * @param type 文件类型
+ * @param file 文件
+ * @param e 拖拽时间回调
+ */
 function getTrackItem(type: TrackType, file: File, e: DragEvent): TrackItem {
   if (type === 'image') return new ImageTrackItem(file, e)
   if (type === 'text') return new TextTrackItem(file, e)
   if (type === 'video') return new VideoTrackItem(file, e)
   return new AudioTrackItem(file, e)
 }
-
-async function onDrop(e: DragEvent) {
+/**
+ * 判断该轨道当前位置能否插入
+ * @param trackLine 待插入的行
+ * @param trackItem 待插入的trackItem
+ */
+function thisLineInsertable(trackLine: TrackLine, trackItem: TrackItem) {
+  for (let i = trackLine.list.length - 1; i >= 0; i--) {
+    if (trackLine.list[i].end < trackItem.start) break
+    if (trackLine.list[i].start < trackItem.end) return false
+  }
+  return true
+}
+/**
+ * 获取拖拽的文件
+ * @param e 拖拽事件回调
+ */
+async function getDraggedFile(e: DragEvent) {
   const files = []
   // 获取拖动的文件
   const fileInfo = e.dataTransfer?.getData('fileInfo')
@@ -90,21 +103,75 @@ async function onDrop(e: DragEvent) {
     // 上传的本地文件
     files.push(...(e.dataTransfer?.files ?? []))
   }
+  return files
+}
+/**
+ * 获取 target 的 line-index 属性，表示当前轨道位于第几行
+ * @param target 拖动终止时鼠标停留的元素
+ */
+function getLineIndex(target: HTMLElement | null) {
+  if (target === null) return
+  if (getElName(target) === 'TrackItem') target = target.parentElement
+  if (target === null) return
+  const lineIndex = target.attributes.getNamedItem('line-index')?.value
+  if (lineIndex === undefined) return
+  return parseInt(lineIndex)
+}
+
+const isDragging = ref(false)
+const offsetX = ref(0)
+const lineIndex = ref<number | undefined>(undefined)
+function onDragOverTrackList(e: DragEvent) {
+  isDragging.value = true
+  offsetX.value = getOffsetX(e)
+}
+
+function onDragOverTrackLine(e: DragEvent) {
+  lineIndex.value = getLineIndex(e.target as HTMLElement)
+}
+
+async function onDrop(e: DragEvent) {
+  isDragging.value = false
+  const files = await getDraggedFile(e)
   files.forEach((file) => {
     const type = getResourcesType(file)
     if (type) {
-      const idx = idxMap[type]
       const trackItem = getTrackItem(type, file, e)
-      if (trackList.value[idx] === undefined) {
-        trackList.value[idx] = {
-          type,
+      // 初始化
+      if (trackList.value.length === 0) {
+        trackList.value.push({
+          type: 'video',
+          isMian: true,
           list: []
+        })
+        if (type === 'video') {
+          trackList.value[0].list.push(trackItem)
+          return
         }
       }
-      trackList.value[idx].list.push(trackItem)
+      // 如果拖动到已有轨道内
+      if (lineIndex.value !== undefined) {
+        // 如果类型匹配且该轨道当前位置可插入
+        const trackLine = trackList.value[lineIndex.value]
+        if (
+          trackLine.type === type &&
+          thisLineInsertable(trackLine, trackItem)
+        ) {
+          trackLine.list.push(trackItem)
+        } else {
+          trackList.value.splice(lineIndex.value + 1, 0, {
+            type,
+            list: [trackItem]
+          })
+        }
+      } else {
+        trackList.value.push({
+          type,
+          list: [trackItem]
+        })
+      }
     }
   })
-  console.log(trackList.value)
 }
 
 function zoomScale(e: WheelEvent) {
@@ -139,33 +206,6 @@ function onScroll(e: UIEvent) {
   display: flex;
   flex: 1;
   flex-direction: column;
-  /* display: grid;
-  grid-template-rows: 1fr 3rem 1fr;
-
-  &-item {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    overflow: hidden;
-  }
-  .track-item {
-    margin: 5px 0;
-  }
-  &-imgAndText {
-    display: flex;
-    flex-direction: column;
-    grid-row: 1/2;
-    justify-content: flex-end;
-  }
-  &-video {
-    width: 100%;
-    height: 3rem;
-    background-color: var(--ep-color-primary-light-8);
-    grid-row: 2/3;
-  }
-  &-audio {
-    grid-row: 3/4;
-  } */
 }
 .empty-info {
   position: absolute;
@@ -192,5 +232,30 @@ function onScroll(e: UIEvent) {
   &:hover {
     border: 2px dashed var(--ep-color-primary);
   }
+}
+
+.info-line-left {
+  position: absolute;
+  z-index: 10;
+  width: 1px;
+  height: 100%;
+  background-color: var(--ep-color-warning);
+}
+
+.info-line-top::before,
+.info-line-bottom::after {
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+  height: 1px;
+  content: '';
+  background-color: var(--ep-color-warning);
+}
+
+.info-line-top::before {
+  top: 0;
+}
+.info-line-bottom::after {
+  bottom: 0;
 }
 </style>

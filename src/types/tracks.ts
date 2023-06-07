@@ -13,11 +13,21 @@ type TrackItem =
   | TextTrackItem
   | ImageTrackItem
 
-type TracksItem = {
+type TrackLine = {
   type: TrackItem['type']
+  isMian?: boolean
   list: Array<TrackItem>
 }
 
-type TrackList = Array<TracksItem>
+type TrackList = Array<TrackLine>
 
-export type { TrackType, TrackItem, TrackList }
+export type {
+  TrackType,
+  TrackItem,
+  TrackLine,
+  TrackList,
+  VideoTrackItem,
+  AudioTrackItem,
+  TextTrackItem,
+  ImageTrackItem
+}

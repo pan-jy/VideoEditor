@@ -36,6 +36,7 @@ declare module '@vue/runtime-core' {
     TimeLine: typeof import('./src/components/track/TimeLine.vue')['default']
     TrackHeader: typeof import('./src/components/track/TrackHeader.vue')['default']
     TrackItem: typeof import('./src/components/track/TrackItem.vue')['default']
+    TrackLine: typeof import('./src/components/track/TrackLine.vue')['default']
     TrackLineItem: typeof import('./src/components/track/TrackLineItem.vue')['default']
     TrackList: typeof import('./src/components/track/TrackList.vue')['default']
     TracksContainer: typeof import('./src/components/container/TracksContainer.vue')['default']

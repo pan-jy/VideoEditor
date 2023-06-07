@@ -1,8 +1,11 @@
 <template>
-  <div class="audio">audio</div>
+  <div class="audio">{{ trackItem.id }}</div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { AudioTrackItem } from '~/types/tracks'
+defineProps<{ trackItem: AudioTrackItem }>()
+</script>
 
 <style lang="scss" scoped>
 .audio {

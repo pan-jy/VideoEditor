@@ -150,8 +150,8 @@ const drawTimeLine = (
   const smallUnitStart = Math.floor(start / smallUnitSize) * smallUnitSize // 小格绘制起点的刻度(start 向下取 smallUnitSize 的整数倍)
   const largeUnitStart = Math.floor(start / largeUnitSize) * largeUnitSize // 大格绘制起点的刻度(start 向下取 largeUnitSize 的整数倍)
 
-  const smallUnitOffsetX = smallUnitStart - start // 小格起点刻度距离原点(start)的px距离
-  const largeUnitOffsetX = largeUnitStart - start // 大格起点刻度距离原点(start)的px距离
+  const smallUnitOffsetX = smallUnitStart + start // 小格起点刻度距离原点(start)的px距离
+  const largeUnitOffsetX = largeUnitStart + start // 大格起点刻度距离原点(start)的px距离
   const endValue = start + Math.ceil(width) // 终点刻度(略超出标尺宽度即可)
 
   // 3. 时间轴聚焦元素

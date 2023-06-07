@@ -3,6 +3,7 @@ import {
   getResourcesFormat
 } from '~/common/utils/getResourcesInfo'
 import { TrackType } from '~/types/tracks'
+import { getOffsetX } from '~/common/utils/getTrackElInfo'
 
 class BaseTrackItem {
   id: number
@@ -20,7 +21,7 @@ class BaseTrackItem {
     this.id = event.timeStamp
     this.type = getResourcesType(file) as TrackType
     this.name = file.name
-    this.start = event.offsetX
+    this.start = getOffsetX(event)
     this.end = this.start + 100
     this.frameCount = 0
     this.offsetL = 0
@@ -79,7 +80,7 @@ class ImageTrackItem extends BaseTrackItem {
   }
 }
 // 指定轨道
-const idxMap: { [K in TrackType]: 0 | 1 | 2 } = {
+const trackOrder: { [K in TrackType]: 0 | 1 | 2 } = {
   image: 0,
   text: 0,
   video: 1,
@@ -93,11 +94,14 @@ const trackHeight: { [K in TrackType]: string } = {
   audio: '3rem'
 }
 
+const trackLeftStart = 10
+
 export {
   VideoTrackItem,
   AudioTrackItem,
   TextTrackItem,
   ImageTrackItem,
-  idxMap,
-  trackHeight
+  trackOrder,
+  trackHeight,
+  trackLeftStart
 }

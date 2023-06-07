@@ -29,7 +29,7 @@ const props = withDefaults(
     focusPosition: { start: number; end: number }
   }>(),
   {
-    start: 0,
+    start: 10,
     step: 30,
     scale: 1,
     focusPosition: () => ({
@@ -118,6 +118,7 @@ window.addEventListener('resize', setCanvasRect, false)
   top: 0;
   right: 0;
   left: 0;
+  z-index: 9;
   height: 1.25rem;
 }
 </style>
