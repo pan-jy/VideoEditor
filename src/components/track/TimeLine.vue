@@ -29,7 +29,7 @@ const props = withDefaults(
     focusPosition: { start: number; end: number }
   }>(),
   {
-    start: 10,
+    start: 0,
     step: 30,
     scale: 1,
     focusPosition: () => ({
