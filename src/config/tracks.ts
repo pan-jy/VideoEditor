@@ -4,6 +4,7 @@ import {
 } from '~/common/utils/getResourcesInfo'
 import { TrackType } from '~/types/tracks'
 import { getOffsetX } from '~/common/utils/getTrackElInfo'
+import { frameCountToPixel } from '~/common/utils/drawTimeLine'
 
 class BaseTrackItem {
   id: number
@@ -17,13 +18,13 @@ class BaseTrackItem {
   format: string
   source: string
 
-  constructor(file: File, event: DragEvent) {
+  constructor(file: File, event: DragEvent, scale: number) {
     this.id = event.timeStamp
     this.type = getResourcesType(file) as TrackType
     this.name = file.name
+    this.frameCount = 100
     this.start = getOffsetX(event)
-    this.end = this.start + 100
-    this.frameCount = 0
+    this.end = this.start + frameCountToPixel(scale, this.frameCount)
     this.offsetL = 0
     this.offsetR = 0
     this.format = getResourcesFormat(file)
@@ -38,8 +39,8 @@ class VideoTrackItem extends BaseTrackItem {
   height: number
   fps: number
 
-  constructor(file: File, event: DragEvent) {
-    super(file, event)
+  constructor(file: File, event: DragEvent, scale: number) {
+    super(file, event, scale)
     this.time = 0
     this.cover = ''
     this.width = 100
@@ -51,8 +52,8 @@ class AudioTrackItem extends BaseTrackItem {
   time: number
   cover: string
 
-  constructor(file: File, event: DragEvent) {
-    super(file, event)
+  constructor(file: File, event: DragEvent, scale: number) {
+    super(file, event, scale)
     this.time = 0
     this.cover = ''
   }
@@ -60,8 +61,8 @@ class AudioTrackItem extends BaseTrackItem {
 class TextTrackItem extends BaseTrackItem {
   templateId: number
 
-  constructor(file: File, event: DragEvent) {
-    super(file, event)
+  constructor(file: File, event: DragEvent, scale: number) {
+    super(file, event, scale)
     this.templateId = 0
   }
 }
@@ -71,8 +72,8 @@ class ImageTrackItem extends BaseTrackItem {
   height: number
   sourceFrame: number
 
-  constructor(file: File, event: DragEvent) {
-    super(file, event)
+  constructor(file: File, event: DragEvent, scale: number) {
+    super(file, event, scale)
     this.cover = ''
     this.width = 100
     this.height = 100

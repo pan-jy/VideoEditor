@@ -4,19 +4,31 @@
     style="height: 100%"
     :trackItem="trackItem"
     draggable="true"
+    :style="{
+      left: `${trackItem.start}px`,
+      width: `${trackItem.end - trackItem.start}px`
+    }"
+    @click="itemClick(trackItem)"
   />
 </template>
 
 <script setup lang="ts">
-import AudioTrack from './AudioTrack.vue'
-import ImageTrack from './ImageTrack.vue'
-import TextTrack from './TextTrack.vue'
-import VideoTrack from './VideoTrack.vue'
+import AudioTrack from './trackItem/AudioTrack.vue'
+import ImageTrack from './trackItem/ImageTrack.vue'
+import TextTrack from './trackItem/TextTrack.vue'
+import VideoTrack from './trackItem/VideoTrack.vue'
 import { TrackItem } from '~/types/tracks'
+import { useTrackState } from '~/stores/trackState'
 
 defineProps<{
   trackItem: TrackItem
 }>()
+
+const trackState = useTrackState()
+
+function itemClick(trackItem: TrackItem) {
+  trackState.focusItem(trackItem.start, trackItem.end)
+}
 
 const componentMap = {
   video: VideoTrack,

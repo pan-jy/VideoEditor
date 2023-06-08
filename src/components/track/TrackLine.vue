@@ -1,11 +1,9 @@
 <template>
   <div
     class="track-line"
+    :class="{ 'is-main': trackLine.isMian, 'is-active': isActive }"
     :style="{
       height: trackHeight[trackLine.type],
-      backgroundColor: trackLine.isMian
-        ? 'var(--ep-color-primary-light-8)'
-        : '',
       margin: `5px 0 5px ${start}px`
     }"
   >
@@ -15,10 +13,6 @@
       :key="trackItem.id"
       el-name="TrackItem"
       :trackItem="trackItem"
-      :style="{
-        left: `${trackItem.start - start}px`,
-        width: `${trackItem.end - trackItem.start}px`
-      }"
     />
   </div>
 </template>
@@ -29,6 +23,7 @@ import { trackHeight, trackLeftStart as start } from '~/config/tracks'
 
 defineProps<{
   trackLine: TrackLine
+  isActive: boolean
 }>()
 </script>
 
@@ -36,11 +31,35 @@ defineProps<{
 .track-line {
   position: relative;
   display: flex;
-  width: 100%;
 }
 .track-item {
   position: absolute;
   overflow: hidden;
   border-radius: 0.25rem;
+}
+
+.is-main {
+  background-color: var(--ep-color-primary-light-8);
+}
+
+.is-active {
+  background-color: var(--ep-fill-color-dark);
+}
+
+.info-line-top::before,
+.info-line-bottom::after {
+  position: absolute;
+  z-index: 10;
+  width: 10000%;
+  height: 1px;
+  content: '';
+  background-color: var(--ep-color-warning);
+}
+
+.info-line-top::before {
+  top: 0;
+}
+.info-line-bottom::after {
+  bottom: 0;
 }
 </style>

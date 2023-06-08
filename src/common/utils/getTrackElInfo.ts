@@ -17,7 +17,7 @@ function getOffsetX(e: DragEvent) {
   if (elName === 'TrackItem') {
     offsetX = e.offsetX + target.offsetLeft
   }
-  return Math.max(10, offsetX - 20)
+  return Math.max(0, offsetX - 30)
 }
 
 export { getElName, getOffsetX }

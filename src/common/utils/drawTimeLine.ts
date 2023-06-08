@@ -32,7 +32,7 @@ const getGridSize = (scale: number): number => {
  * @param frameCount 帧数
  * @returns 当前scale下的单元格像素
  */
-const getGridPixel = (scale: number, frameCount: number) => {
+const frameCountToPixel = (scale: number, frameCount: number) => {
   const gridPixel = getGridSize(scale)
   let trackWidth = gridPixel * frameCount
   if (scale < 7) {
@@ -44,6 +44,23 @@ const getGridPixel = (scale: number, frameCount: number) => {
     trackWidth = trackWidth / 6
   }
   return trackWidth
+}
+/**
+ * 获取选中点的帧坐标
+ * @param scale 时间轴缩放比
+ * @param offsetX 点击位置相对父元素的横坐标偏移量
+ * @returns 选中点的帧坐标
+ */
+function pixelToFrameCount(scale: number, pixel: number) {
+  const gridPixel = getGridSize(scale)
+  let frameCount = pixel / gridPixel
+  if (scale < 7) {
+    frameCount *= 30
+  }
+  if (scale < 3) {
+    frameCount *= 6
+  }
+  return frameCount
 }
 /**
  * 根据缩放比调整 step ( setp 个小单元格构成一个大单元格)
@@ -88,25 +105,25 @@ const getShortText = (smallUnitIndex: number, step: number, scale: number) => {
     : ''
 }
 
-/**
- * 获取选中点的帧坐标
- * @param offsetX 点击位置相对父元素的横坐标偏移量
- * @param scale 时间轴缩放比
- * @param frameStep 步进，与视频 fps 同步
- * @returns 选中点的帧坐标
- */
-const getSelectFrame = (offsetX: number, scale: number, frameStep: number) => {
-  const size = getGridSize(scale)
-  if (scale < 7) {
-    // 一个单元格为 1 秒
-    offsetX *= frameStep
-  }
-  if (scale < 3) {
-    // 一个单元格为 6 秒
-    offsetX *= 6
-  }
-  return Math.floor(offsetX / size) + (scale < 7 ? 0 : 1)
-}
+// /**
+//  * 获取选中点的帧坐标
+//  * @param scale 时间轴缩放比
+//  * @param offsetX 点击位置相对父元素的横坐标偏移量
+//  * @param frameStep 步进，与视频 fps 同步
+//  * @returns 选中点的帧坐标
+//  */
+// const pixelToFrameCount = (scale: number, offsetX: number, frameStep = 30) => {
+//   const size = getGridSize(scale)
+//   if (scale < 7) {
+//     // 一个单元格为 1 秒
+//     offsetX *= frameStep
+//   }
+//   if (scale < 3) {
+//     // 一个单元格为 6 秒
+//     offsetX *= 6
+//   }
+//   return Math.floor(offsetX / size) + (scale < 7 ? 0 : 1)
+// }
 /**
  * 使用 canvas 绘制时间轴
  * @param context canvas 2D 渲染上下文
@@ -237,4 +254,4 @@ const drawTimeLine = (
   context.setTransform(1, 0, 0, 1, 0, 0)
 }
 
-export { getGridPixel, getLongText, getSelectFrame, drawTimeLine }
+export { frameCountToPixel, pixelToFrameCount, getLongText, drawTimeLine }
