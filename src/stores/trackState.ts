@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { reactive, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import type { TrackItem, TrackLine, TrackList, TrackType } from '~/types/tracks'
 import { trackOrder } from '~/config/tracks'
 import {
@@ -9,13 +9,7 @@ import {
 
 export const useTrackState = defineStore('trackState', () => {
   const scale = ref(1)
-
-  const focusPosition = reactive({ start: 0, end: 0 })
-
-  function focusItem(start: number, end: number) {
-    focusPosition.start = start
-    focusPosition.end = end
-  }
+  let focusedItem: TrackItem | undefined
 
   const trackList = ref<TrackList>([])
   // 监听列表变化，对列表进行排序
@@ -84,7 +78,7 @@ export const useTrackState = defineStore('trackState', () => {
     type: TrackType,
     trackItem: TrackItem
   ) {
-    if (lineIndex === undefined) {
+    if (lineIndex === undefined || lineIndex >= trackList.value.length) {
       trackList.value.push({
         type,
         list: [trackItem]
@@ -103,12 +97,19 @@ export const useTrackState = defineStore('trackState', () => {
     })
   }
 
+  function removeTrackItem(lineIndex: number, itemIndex: number) {
+    const trackLine = trackList.value[lineIndex]
+    trackLine.list.splice(itemIndex, 1)
+    if (trackLine.list.length === 0 && !trackLine.isMian)
+      trackList.value.splice(lineIndex, 1)
+  }
+
   return {
     scale,
+    focusedItem,
     trackList,
-    focusPosition,
-    focusItem,
     initTrackList,
-    insertToTrackList
+    insertToTrackList,
+    removeTrackItem
   }
 })

@@ -12,7 +12,10 @@
       <TimeLine
         :scale="trackState.scale"
         :start="scrollVal.scrollLeft - trackLeftStart"
-        :focusPosition="trackState.focusPosition"
+        :focusPosition="{
+          start: trackState.focusedItem?.start,
+          end: trackState.focusedItem?.end
+        }"
       />
       <div class="empty-info" v-if="trackList.length === 0">
         <el-icon size="20"><Files /></el-icon>
@@ -22,7 +25,7 @@
         <TrackLine
           v-for="(trackLine, index) in trackList"
           :key="index"
-          :line-index="index"
+          :lineIndex="index"
           el-name="TrackLine"
           :trackLine="trackLine"
           :class="[
@@ -146,14 +149,27 @@ function getTrackItem(file: File, e: DragEvent) {
 
 async function onDrop(e: DragEvent) {
   isDragging.value = false
-  const files = await getDraggedFiles(e)
-  files.forEach((file) => {
-    const trackItem = getTrackItem(file, e)
-    if (trackItem === null) return
-    const type = trackItem.type
-    if (trackState.initTrackList(type, trackItem)) return
-    trackState.insertToTrackList(lineIndex.value, type, trackItem)
-  })
+  const draggedIdx = e.dataTransfer?.getData('draggedIdx')
+  if (draggedIdx) {
+    const { draggedLineIndex, draggedItemIndex } = JSON.parse(draggedIdx) as {
+      draggedLineIndex: number
+      draggedItemIndex: number
+    }
+    const trackItem = trackList[draggedLineIndex].list[draggedItemIndex]
+    trackState.removeTrackItem(draggedLineIndex, draggedItemIndex)
+    trackState.insertToTrackList(lineIndex.value, trackItem.type, trackItem)
+    trackItem.setStart(e, trackState.scale)
+    e.dataTransfer?.clearData()
+  } else {
+    const files = await getDraggedFiles(e)
+    files.forEach((file) => {
+      const trackItem = getTrackItem(file, e)
+      if (trackItem === null) return
+      const type = trackItem.type
+      if (trackState.initTrackList(type, trackItem)) return
+      trackState.insertToTrackList(lineIndex.value, type, trackItem)
+    })
+  }
   lineIndex.value = undefined
 }
 </script>

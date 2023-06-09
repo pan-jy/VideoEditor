@@ -27,7 +27,7 @@ defineProps<{
 const trackState = useTrackState()
 
 function itemClick(trackItem: TrackItem) {
-  trackState.focusItem(trackItem.start, trackItem.end)
+  trackState.focusedItem = trackItem
 }
 
 const componentMap = {

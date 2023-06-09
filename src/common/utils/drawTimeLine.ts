@@ -173,22 +173,11 @@ const drawTimeLine = (
 
   // 3. 时间轴聚焦元素
   if (focusPosition) {
-    let fStart = focusPosition.start
-    let fCount = focusPosition.end - focusPosition.start
-    if (scale < 7) {
-      // 一个单元格为 1 秒
-      fStart = fStart / 30
-      fCount = fCount / 30
-    }
-    if (scale < 3) {
-      // 一个单元格为 6 秒
-      fStart = fStart / 6
-      fCount = fCount / 6
-    }
-    const focusS = fStart * smallUnitSize + lineWidth - start // 选中起点坐标
-    const focusW = fCount * smallUnitSize - lineWidth // 选中宽度
-    if (focusW > smallUnitSize) {
-      // 小于一个小格的元素就不提示了
+    const fStart = focusPosition.start
+    const focusS = fStart - start // 选中起点坐标
+    const focusW = focusPosition.end - fStart // 选中宽度
+    // 小于一个小格的元素就不提示了
+    if (focusW >= smallUnitSize) {
       context.fillStyle = focusColor
       context.fillRect(focusS, 0, focusW, (height * 3) / 8)
     }

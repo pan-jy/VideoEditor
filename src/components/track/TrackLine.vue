@@ -10,10 +10,13 @@
   >
     <TrackItem
       class="track-item"
-      v-for="trackItem in trackLine.list"
+      v-for="(trackItem, index) in trackLine.list"
       :key="trackItem.id"
       el-name="TrackItem"
       :trackItem="trackItem"
+      :style="{ opacity: isDragging ? 0.5 : 1 }"
+      @dragstart="dragItem($event, index)"
+      @dragend="isDragging = false"
     />
   </div>
 </template>
@@ -26,19 +29,31 @@ import { trackHeight, trackLeftStart as start } from '~/config/tracks'
 const props = defineProps<{
   trackLine: TrackLine
   isActive: boolean
+  lineIndex: number
 }>()
 
 const trackLineEl = ref<HTMLDivElement>()
 watch(
-  () => props.trackLine.list.slice(-1)[0].end,
+  () => props.trackLine.list.slice(-1)[0]?.end,
   (end) => {
     nextTick(() => {
-      console.log(trackLineEl.value)
       if (trackLineEl.value === undefined) return
       trackLineEl.value.style.width = `${end}px`
     })
   }
 )
+
+const isDragging = ref(false)
+function dragItem(e: DragEvent, index: number) {
+  isDragging.value = true
+  e.dataTransfer?.setData(
+    'draggedIdx',
+    JSON.stringify({
+      draggedLineIndex: props.lineIndex,
+      draggedItemIndex: index
+    })
+  )
+}
 </script>
 
 <style lang="scss" scoped>

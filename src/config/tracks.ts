@@ -22,13 +22,18 @@ class BaseTrackItem {
     this.id = event.timeStamp
     this.type = getResourcesType(file) as TrackType
     this.name = file.name
-    this.frameCount = 100
+    this.frameCount = 1000
     this.start = getOffsetX(event)
     this.end = this.start + frameCountToPixel(scale, this.frameCount)
     this.offsetL = 0
     this.offsetR = 0
     this.format = getResourcesFormat(file)
     this.source = ''
+  }
+
+  setStart(event: DragEvent, scale: number) {
+    this.start = getOffsetX(event)
+    this.end = this.start + frameCountToPixel(scale, this.frameCount)
   }
 }
 
