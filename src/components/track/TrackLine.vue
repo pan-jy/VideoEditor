@@ -1,6 +1,7 @@
 <template>
   <div
     class="track-line"
+    ref="trackLineEl"
     :class="{ 'is-main': trackLine.isMian, 'is-active': isActive }"
     :style="{
       height: trackHeight[trackLine.type],
@@ -18,19 +19,33 @@
 </template>
 
 <script setup lang="ts">
+import { nextTick, ref, watch } from 'vue'
 import { TrackLine } from '~/types/tracks'
 import { trackHeight, trackLeftStart as start } from '~/config/tracks'
 
-defineProps<{
+const props = defineProps<{
   trackLine: TrackLine
   isActive: boolean
 }>()
+
+const trackLineEl = ref<HTMLDivElement>()
+watch(
+  () => props.trackLine.list.slice(-1)[0].end,
+  (end) => {
+    nextTick(() => {
+      console.log(trackLineEl.value)
+      if (trackLineEl.value === undefined) return
+      trackLineEl.value.style.width = `${end}px`
+    })
+  }
+)
 </script>
 
 <style lang="scss" scoped>
 .track-line {
   position: relative;
   display: flex;
+  min-width: 100%;
 }
 .track-item {
   position: absolute;
@@ -50,7 +65,7 @@ defineProps<{
 .info-line-bottom::after {
   position: absolute;
   z-index: 10;
-  width: 10000%;
+  width: 100%;
   height: 1px;
   content: '';
   background-color: var(--ep-color-warning);

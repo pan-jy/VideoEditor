@@ -171,12 +171,15 @@ async function onDrop(e: DragEvent) {
     flex: 1;
     flex-direction: column;
     overflow: auto;
+
+    .tracks {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      width: max-content;
+      min-width: 100%;
+    }
   }
-}
-.tracks {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
 }
 .empty-info {
   position: absolute;
