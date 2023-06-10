@@ -1,5 +1,5 @@
 <template>
-  <div class="canvasContainer" ref="canvasContainer">
+  <div class="canvasContainer" ref="canvasContainer" @click="getTiming">
     <canvas
       class="timeLine"
       ref="timeLine"
@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
-import { drawTimeLine } from '~/common/utils/drawTimeLine'
+import { drawTimeLine, pixelToFrameCount } from '~/common/utils/drawTimeLine'
 import type {
   UserConfig,
   CanvasConfig,
@@ -38,6 +38,16 @@ const props = withDefaults(
     })
   }
 )
+
+const emits = defineEmits(['setTiming'])
+const getTiming = (e: MouseEvent) => {
+  const timing = pixelToFrameCount(
+    props.scale,
+    Math.max(0, e.offsetX + props.start)
+  )
+  emits('setTiming', timing)
+}
+
 const canvasContainer = ref<HTMLDivElement>()
 const timeLine = ref<HTMLCanvasElement>()
 let canvasContext = {} as CanvasRenderingContext2D

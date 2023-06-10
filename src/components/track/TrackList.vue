@@ -16,6 +16,17 @@
           start: trackState.focusedItem?.start,
           end: trackState.focusedItem?.end
         }"
+        @setTiming="(v:number) => (timing = v)"
+      />
+      <div
+        v-show="trackList.length > 0"
+        class="timing-line"
+        :style="{
+          left: `${
+            frameCountToPixel(trackState.scale, timing) + trackLeftStart
+          }px`,
+          top: `${scrollVal.scrollTop}px`
+        }"
       />
       <div class="empty-info" v-if="trackList.length === 0">
         <el-icon size="20"><Files /></el-icon>
@@ -26,8 +37,8 @@
           v-for="(trackLine, index) in trackList"
           :key="index"
           :lineIndex="index"
-          el-name="TrackLine"
           :trackLine="trackLine"
+          @dragover.prevent="onDragOverTrackLine($event, index)"
           :class="[
             lineIndex === index && isDragging
               ? showInfoLineBootom
@@ -35,7 +46,6 @@
                 : 'info-line-top'
               : ''
           ]"
-          @dragover.prevent="onDragOverTrackLine($event, index)"
         />
       </div>
       <div
@@ -52,7 +62,11 @@ import { Files } from '@element-plus/icons-vue'
 import { reactive, ref } from 'vue'
 import { fetchFile } from '~/common/utils/fetchFile'
 import { useTrackState } from '~/stores/trackState'
-import { getElName, getOffsetX } from '~/common/utils/getTrackElInfo'
+import {
+  isContains,
+  getOffsetX,
+  getOuterTarget
+} from '~/common/utils/getTrackElInfo'
 import { getResourcesType } from '~/common/utils/getResourcesInfo'
 import { useThrottleFn } from '@vueuse/core'
 import {
@@ -62,6 +76,10 @@ import {
   AudioTrackItem,
   trackLeftStart
 } from '~/config/tracks'
+import { DraggedIdx } from '~/types/tracks'
+import { frameCountToPixel } from '~/common/utils/drawTimeLine'
+
+const timing = ref(0)
 
 const trackState = useTrackState()
 const trackList = trackState.trackList
@@ -102,9 +120,11 @@ const onDragOverTrackLine = useThrottleFn((e: DragEvent, index: number) => {
   // 避免 target 的是 info-line
   const target = (
     targets[0].classList.contains('info-line-left') ? targets[1] : targets[0]
-  ) as HTMLElement | null
+  ) as HTMLElement
+  // 获取 target 外层元素
+  const outerTarget = getOuterTarget(target)
   // 是否和已有的 trackItem 发生重叠
-  const overlapItem = getElName(target) === 'TrackItem'
+  const overlapItem = isContains(outerTarget, 'track-item')
   if (overlapItem) {
     showInfoLineBootom.value = false
     index++
@@ -151,14 +171,13 @@ async function onDrop(e: DragEvent) {
   isDragging.value = false
   const draggedIdx = e.dataTransfer?.getData('draggedIdx')
   if (draggedIdx) {
-    const { draggedLineIndex, draggedItemIndex } = JSON.parse(draggedIdx) as {
-      draggedLineIndex: number
-      draggedItemIndex: number
-    }
+    const { draggedLineIndex, draggedItemIndex } = JSON.parse(
+      draggedIdx
+    ) as DraggedIdx
     const trackItem = trackList[draggedLineIndex].list[draggedItemIndex]
+    trackItem.setStart(e, trackState.scale)
     trackState.removeTrackItem(draggedLineIndex, draggedItemIndex)
     trackState.insertToTrackList(lineIndex.value, trackItem.type, trackItem)
-    trackItem.setStart(e, trackState.scale)
     e.dataTransfer?.clearData()
   } else {
     const files = await getDraggedFiles(e)
@@ -224,11 +243,27 @@ async function onDrop(e: DragEvent) {
   }
 }
 
-.info-line-left {
+.info-line-left,
+.timing-line {
   position: absolute;
   z-index: 10;
   width: 1px;
   height: 100%;
   background-color: var(--ep-color-warning);
+}
+
+.timing-line {
+  background-color: #fff;
+
+  &::after {
+    position: absolute;
+    top: 0;
+    width: 10px;
+    height: 20px;
+    clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
+    content: '';
+    background-color: #fff;
+    transform: translateX(-50%);
+  }
 }
 </style>

@@ -34,16 +34,16 @@ const getGridSize = (scale: number): number => {
  */
 const frameCountToPixel = (scale: number, frameCount: number) => {
   const gridPixel = getGridSize(scale)
-  let trackWidth = gridPixel * frameCount
+  let pixel = gridPixel * frameCount
   if (scale < 7) {
     // 1秒一格
-    trackWidth = trackWidth / 30
+    pixel /= 30
   }
   if (scale < 3) {
     // 6秒一格
-    trackWidth = trackWidth / 6
+    pixel /= 6
   }
-  return trackWidth
+  return pixel
 }
 /**
  * 获取选中点的帧坐标
@@ -172,10 +172,12 @@ const drawTimeLine = (
   const endValue = start + Math.ceil(width) // 终点刻度(略超出标尺宽度即可)
 
   // 3. 时间轴聚焦元素
-  if (focusPosition) {
-    const fStart = focusPosition.start
-    const focusS = fStart - start // 选中起点坐标
-    const focusW = focusPosition.end - fStart // 选中宽度
+  if (focusPosition.start > 0) {
+    const focusS = frameCountToPixel(scale, focusPosition.start) - start
+    const focusW = frameCountToPixel(
+      scale,
+      focusPosition.end - focusPosition.start
+    )
     // 小于一个小格的元素就不提示了
     if (focusW >= smallUnitSize) {
       context.fillStyle = focusColor

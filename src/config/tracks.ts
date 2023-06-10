@@ -4,14 +4,14 @@ import {
 } from '~/common/utils/getResourcesInfo'
 import { TrackType } from '~/types/tracks'
 import { getOffsetX } from '~/common/utils/getTrackElInfo'
-import { frameCountToPixel } from '~/common/utils/drawTimeLine'
+import { pixelToFrameCount } from '~/common/utils/drawTimeLine'
 
 class BaseTrackItem {
   id: number
   type: TrackType
   name: string
-  start: number
-  end: number
+  start = 0
+  end = 0
   frameCount: number
   offsetL: number
   offsetR: number
@@ -23,8 +23,7 @@ class BaseTrackItem {
     this.type = getResourcesType(file) as TrackType
     this.name = file.name
     this.frameCount = 1000
-    this.start = getOffsetX(event)
-    this.end = this.start + frameCountToPixel(scale, this.frameCount)
+    this.setStart(event, scale)
     this.offsetL = 0
     this.offsetR = 0
     this.format = getResourcesFormat(file)
@@ -32,8 +31,8 @@ class BaseTrackItem {
   }
 
   setStart(event: DragEvent, scale: number) {
-    this.start = getOffsetX(event)
-    this.end = this.start + frameCountToPixel(scale, this.frameCount)
+    this.start = pixelToFrameCount(scale, getOffsetX(event))
+    this.end = this.start + this.frameCount
   }
 }
 

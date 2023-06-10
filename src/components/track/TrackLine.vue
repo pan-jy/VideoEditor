@@ -12,11 +12,11 @@
       class="track-item"
       v-for="(trackItem, index) in trackLine.list"
       :key="trackItem.id"
-      el-name="TrackItem"
+      :draggedIdx="{
+        draggedLineIndex: lineIndex,
+        draggedItemIndex: index
+      }"
       :trackItem="trackItem"
-      :style="{ opacity: isDragging ? 0.5 : 1 }"
-      @dragstart="dragItem($event, index)"
-      @dragend="isDragging = false"
     />
   </div>
 </template>
@@ -25,6 +25,8 @@
 import { nextTick, ref, watch } from 'vue'
 import { TrackLine } from '~/types/tracks'
 import { trackHeight, trackLeftStart as start } from '~/config/tracks'
+import { useTrackState } from '~/stores/trackState'
+import { frameCountToPixel } from '~/common/utils/drawTimeLine'
 
 const props = defineProps<{
   trackLine: TrackLine
@@ -32,28 +34,20 @@ const props = defineProps<{
   lineIndex: number
 }>()
 
+const trackState = useTrackState()
 const trackLineEl = ref<HTMLDivElement>()
 watch(
-  () => props.trackLine.list.slice(-1)[0]?.end,
-  (end) => {
+  () => [props.trackLine.list.slice(-1)[0]?.end, trackState.scale],
+  ([end, scale]) => {
     nextTick(() => {
-      if (trackLineEl.value === undefined) return
-      trackLineEl.value.style.width = `${end}px`
+      if (!trackLineEl.value) return
+      trackLineEl.value.style.width = `${frameCountToPixel(scale, end)}px`
     })
+  },
+  {
+    immediate: true
   }
 )
-
-const isDragging = ref(false)
-function dragItem(e: DragEvent, index: number) {
-  isDragging.value = true
-  e.dataTransfer?.setData(
-    'draggedIdx',
-    JSON.stringify({
-      draggedLineIndex: props.lineIndex,
-      draggedItemIndex: index
-    })
-  )
-}
 </script>
 
 <style lang="scss" scoped>

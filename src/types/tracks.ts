@@ -21,6 +21,11 @@ type TrackLine = {
 
 type TrackList = Array<TrackLine>
 
+type DraggedIdx = {
+  draggedLineIndex: number
+  draggedItemIndex: number
+}
+
 export type {
   TrackType,
   TrackItem,
@@ -29,5 +34,6 @@ export type {
   VideoTrackItem,
   AudioTrackItem,
   TextTrackItem,
-  ImageTrackItem
+  ImageTrackItem,
+  DraggedIdx
 }

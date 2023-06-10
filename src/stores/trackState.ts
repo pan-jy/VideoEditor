@@ -2,10 +2,6 @@ import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import type { TrackItem, TrackLine, TrackList, TrackType } from '~/types/tracks'
 import { trackOrder } from '~/config/tracks'
-import {
-  frameCountToPixel,
-  pixelToFrameCount
-} from '~/common/utils/drawTimeLine'
 
 export const useTrackState = defineStore('trackState', () => {
   const scale = ref(1)
@@ -19,22 +15,6 @@ export const useTrackState = defineStore('trackState', () => {
       trackLine.list.sort((a, b) => a.start - b.start)
     })
   })
-
-  watch(
-    () => scale.value,
-    (scale, oldScale) => {
-      trackList.value.forEach((trackLine) => {
-        trackLine.list.forEach((trackItem) => {
-          trackItem.start = frameCountToPixel(
-            scale,
-            pixelToFrameCount(oldScale, trackItem.start)
-          )
-          trackItem.end =
-            trackItem.start + frameCountToPixel(scale, trackItem.frameCount)
-        })
-      })
-    }
-  )
 
   /**
    * 判断该轨道当前位置能否插入
