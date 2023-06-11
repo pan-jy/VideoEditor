@@ -1,13 +1,31 @@
 import { defineStore } from 'pinia'
-import { ref, watch } from 'vue'
-import type { TrackItem, TrackLine, TrackList, TrackType } from '~/types/tracks'
+import { computed, ref, watch } from 'vue'
+import type {
+  TrackItem,
+  TrackLine,
+  TrackList,
+  TrackType,
+  TrackItemIdx
+} from '~/types/tracks'
 import { trackOrder } from '~/config/tracks'
 
 export const useTrackState = defineStore('trackState', () => {
   const scale = ref(1)
-  let focusedItem: TrackItem | undefined
-
   const trackList = ref<TrackList>([])
+  const focusedItem = ref<TrackItem | undefined>()
+
+  const focusedItemIdx = computed((): TrackItemIdx | undefined => {
+    if (focusedItem.value === undefined) return
+    for (const lineIdx in trackList.value) {
+      const itemList = trackList.value[lineIdx].list
+      for (const itemIdx in itemList) {
+        if (itemList[itemIdx] === focusedItem.value)
+          return { lineIdx: parseInt(lineIdx), itemIdx: parseInt(itemIdx) }
+      }
+    }
+    return undefined
+  })
+
   // 监听列表变化，对列表进行排序
   watch(trackList.value, (trackList) => {
     trackList.sort((a, b) => trackOrder[a.type] - trackOrder[b.type])
@@ -42,7 +60,7 @@ export const useTrackState = defineStore('trackState', () => {
         list: []
       })
       if (type === 'video') {
-        trackList.value[0].list.push(trackItem)
+        insertToTrackList(0, 'video', trackItem)
         return true
       }
     }
@@ -58,6 +76,7 @@ export const useTrackState = defineStore('trackState', () => {
     type: TrackType,
     trackItem: TrackItem
   ) {
+    focusedItem.value = trackItem
     if (lineIndex === undefined || lineIndex >= trackList.value.length) {
       trackList.value.push({
         type,
@@ -87,6 +106,7 @@ export const useTrackState = defineStore('trackState', () => {
   return {
     scale,
     focusedItem,
+    focusedItemIdx,
     trackList,
     initTrackList,
     insertToTrackList,

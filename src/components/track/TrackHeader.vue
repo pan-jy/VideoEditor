@@ -6,7 +6,7 @@
         :key="item.title"
         :content="item.title"
       >
-        <el-button :icon="item.icon" circle />
+        <el-button :icon="item.icon" @click="operation(item.title)" circle />
       </el-tooltip>
     </div>
     <div class="track-header-right">
@@ -27,6 +27,15 @@ import { trackHeaderMenu } from '~/config/baseMenu'
 import { useTrackState } from '~/stores/trackState'
 
 const trackState = useTrackState()
+
+function operation(type: string) {
+  if (type === '删除') {
+    const focusedItemIdx = trackState.focusedItemIdx
+    if (focusedItemIdx === undefined) return
+    trackState.focusedItem = undefined
+    trackState.removeTrackItem(focusedItemIdx.lineIdx, focusedItemIdx.itemIdx)
+  }
+}
 </script>
 
 <style lang="scss" scoped>

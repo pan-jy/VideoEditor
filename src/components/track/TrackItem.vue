@@ -83,11 +83,10 @@ function mouseDowm(type: 'left' | 'right') {
           | TrackItem
           | undefined
         const newFrameCount = targetItem.frameCount + diff
-        if (
-          newFrameCount > 10 &&
-          (!nextItem || newFrameCount < nextItem.start - targetItem.start)
-        ) {
+        const newEnd = targetItem.end + diff
+        if (newFrameCount > 10 && (!nextItem || newEnd < nextItem.start)) {
           targetItem.frameCount = newFrameCount
+          targetItem.end = newEnd
         }
       }
     }
@@ -138,12 +137,13 @@ const componentMap: { [K in TrackType]: never } = {
     height: 100%;
     overflow: hidden;
     cursor: grab;
-    border-radius: 0.25rem;
+    border-radius: 0.3rem;
   }
 
   .show-border {
     border-top: 1px solid var(--ep-text-color-primary);
     border-bottom: 1px solid var(--ep-text-color-primary);
+    border-radius: 0;
   }
 }
 
