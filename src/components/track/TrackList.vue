@@ -8,6 +8,7 @@
       @wheel="zoomScale"
       @scroll="onScroll"
       @dragleave="isDragging = false"
+      @click="trackState.focusedItem = undefined"
     >
       <TimeLine
         :scale="trackState.scale"
@@ -76,7 +77,7 @@ import {
   AudioTrackItem,
   trackLeftStart
 } from '~/config/tracks'
-import { DraggedIdx } from '~/types/tracks'
+import { TrackItemIdx } from '~/types/tracks'
 import { frameCountToPixel } from '~/common/utils/drawTimeLine'
 
 const timing = ref(0)
@@ -169,14 +170,12 @@ function getTrackItem(file: File, e: DragEvent) {
 
 async function onDrop(e: DragEvent) {
   isDragging.value = false
-  const draggedIdx = e.dataTransfer?.getData('draggedIdx')
-  if (draggedIdx) {
-    const { draggedLineIndex, draggedItemIndex } = JSON.parse(
-      draggedIdx
-    ) as DraggedIdx
-    const trackItem = trackList[draggedLineIndex].list[draggedItemIndex]
+  const trackItemIdx = e.dataTransfer?.getData('trackItemIdx')
+  if (trackItemIdx) {
+    const { lineIdx, itemIdx } = JSON.parse(trackItemIdx) as TrackItemIdx
+    const trackItem = trackList[lineIdx].list[itemIdx]
     trackItem.setStart(e, trackState.scale)
-    trackState.removeTrackItem(draggedLineIndex, draggedItemIndex)
+    trackState.removeTrackItem(lineIdx, itemIdx)
     trackState.insertToTrackList(lineIndex.value, trackItem.type, trackItem)
     e.dataTransfer?.clearData()
   } else {

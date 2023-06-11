@@ -16,6 +16,6 @@ defineProps<{ trackItem: VideoTrackItem }>()
 
 <style lang="scss" scoped>
 .video {
-  background-color: lawngreen;
+  background-color: rgb(98, 99, 98);
 }
 </style>

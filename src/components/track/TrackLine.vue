@@ -9,12 +9,11 @@
     }"
   >
     <TrackItem
-      class="track-item"
       v-for="(trackItem, index) in trackLine.list"
       :key="trackItem.id"
-      :draggedIdx="{
-        draggedLineIndex: lineIndex,
-        draggedItemIndex: index
+      :trackItemIdx="{
+        lineIdx: lineIndex,
+        itemIdx: index
       }"
       :trackItem="trackItem"
     />
@@ -56,12 +55,6 @@ watch(
   display: flex;
   min-width: 100%;
 }
-.track-item {
-  position: absolute;
-  overflow: hidden;
-  border-radius: 0.25rem;
-}
-
 .is-main {
   background-color: var(--ep-color-primary-light-8);
 }

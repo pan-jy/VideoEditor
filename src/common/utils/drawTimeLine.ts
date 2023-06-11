@@ -172,7 +172,7 @@ const drawTimeLine = (
   const endValue = start + Math.ceil(width) // 终点刻度(略超出标尺宽度即可)
 
   // 3. 时间轴聚焦元素
-  if (focusPosition.start > 0) {
+  if (focusPosition.start >= 0) {
     const focusS = frameCountToPixel(scale, focusPosition.start) - start
     const focusW = frameCountToPixel(
       scale,
