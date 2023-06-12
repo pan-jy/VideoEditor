@@ -179,10 +179,10 @@ const drawTimeLine = (
       focusPosition.end - focusPosition.start
     )
     // 小于一个小格的元素就不提示了
-    if (focusW >= smallUnitSize) {
-      context.fillStyle = focusColor
-      context.fillRect(focusS, 0, focusW, (height * 3) / 8)
-    }
+    // if (focusW >= smallUnitSize) {
+    context.fillStyle = focusColor
+    context.fillRect(focusS, 0, focusW, (height * 3) / 8)
+    // }
   }
 
   /**

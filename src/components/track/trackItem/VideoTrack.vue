@@ -1,12 +1,5 @@
 <template>
-  <div class="video">
-    <span>{{ trackItem.id }}</span>
-    <div style="position: relative; left: 30px">
-      <span>111</span>
-      <span>222</span>
-    </div>
-    <div>333</div>
-  </div>
+  <div class="video"></div>
 </template>
 
 <script setup lang="ts">
@@ -16,6 +9,6 @@ defineProps<{ trackItem: VideoTrackItem }>()
 
 <style lang="scss" scoped>
 .video {
-  background-color: rgb(98, 99, 98);
+  background-color: var(--ep-fill-color);
 }
 </style>

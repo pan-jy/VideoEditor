@@ -42,4 +42,7 @@ declare module '@vue/runtime-core' {
     TracksContainer: typeof import('./src/components/container/TracksContainer.vue')['default']
     VideoTrack: typeof import('./src/components/track/trackItem/VideoTrack.vue')['default']
   }
+  export interface ComponentCustomProperties {
+    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
+  }
 }

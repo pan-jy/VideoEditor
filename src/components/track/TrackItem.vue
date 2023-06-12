@@ -54,7 +54,10 @@ const left = ref()
 const width = ref()
 watchEffect(() => {
   left.value = frameCountToPixel(trackState.scale, props.trackItem.start)
-  width.value = frameCountToPixel(trackState.scale, props.trackItem.frameCount)
+  width.value = frameCountToPixel(
+    trackState.scale,
+    props.trackItem.end - props.trackItem.start
+  )
 })
 
 const showHandler = computed(() => {
@@ -73,20 +76,42 @@ function mouseDowm(type: 'left' | 'right') {
           | TrackItem
           | undefined
         const newStart = targetItem.start + diff
-        const newFrameCount = targetItem.frameCount - diff
-        if (newStart > (preItem?.end ?? 0) && newFrameCount > 10) {
-          targetItem.start = newStart
-          targetItem.frameCount = newFrameCount
+        if (newStart < (preItem?.end ?? 0)) return
+        if (['video', 'audio'].includes(props.trackItem.type)) {
+          const newOffsetL = targetItem.offsetL + diff
+          const showFrameCount =
+            targetItem.frameCount - newOffsetL - targetItem.offsetR
+          if (newOffsetL >= 0 && showFrameCount >= 10) {
+            targetItem.offsetL = newOffsetL
+            targetItem.start = newStart
+          }
+        } else {
+          const newFrameCount = targetItem.frameCount - diff
+          if (newFrameCount > 10) {
+            targetItem.start = newStart
+            targetItem.frameCount = newFrameCount
+          }
         }
       } else {
         const nextItem = targetList[props.trackItemIdx.itemIdx + 1] as
           | TrackItem
           | undefined
-        const newFrameCount = targetItem.frameCount + diff
         const newEnd = targetItem.end + diff
-        if (newFrameCount > 10 && (!nextItem || newEnd < nextItem.start)) {
-          targetItem.frameCount = newFrameCount
-          targetItem.end = newEnd
+        if (nextItem && newEnd > nextItem.start) return
+        if (['video', 'audio'].includes(props.trackItem.type)) {
+          const newOffsetR = targetItem.offsetR - diff
+          const showFrameCount =
+            targetItem.frameCount - targetItem.offsetL - newOffsetR
+          if (newOffsetR >= 0 && showFrameCount >= 10) {
+            targetItem.offsetR = newOffsetR
+            targetItem.end = newEnd
+          }
+        } else {
+          const newFrameCount = targetItem.frameCount + diff
+          if (newFrameCount > 10) {
+            targetItem.frameCount = newFrameCount
+            targetItem.end = newEnd
+          }
         }
       }
     }

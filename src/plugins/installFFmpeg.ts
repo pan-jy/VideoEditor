@@ -1,12 +1,12 @@
 import { App } from 'vue'
-import FFmpeg from '~/common/composables/useFFmpeg'
+import { FFmpegManager } from '~/common/composables/useFFmpeg'
 import { ElLoading } from 'element-plus'
 import 'element-plus/es/components/loading/style/css'
 
 const installFFmpeg = {
   install(app: App) {
     let loadingIns: ReturnType<typeof ElLoading.service>
-    const ffmpeg = new FFmpeg({
+    const ffmpeg = new FFmpegManager({
       Hooks: {
         beforeInit: () => {
           loadingIns = ElLoading.service({
@@ -18,7 +18,8 @@ const installFFmpeg = {
         afterInit: () => {
           loadingIns.close()
         }
-      }
+      },
+      log: false
     })
     ffmpeg.init()
     app.provide('ffmpeg', ffmpeg)

@@ -14,7 +14,7 @@ const mockMethods: MockMethod[] = [
             type: 'video',
             items: [
               {
-                name: 'video_1',
+                name: 'video_1.mp4',
                 format: 'mp4',
                 cover: '/image/video/video_1.png',
                 source: '/video/video_1.mp4',
@@ -25,7 +25,7 @@ const mockMethods: MockMethod[] = [
                 time: 24000
               },
               {
-                name: 'video_2',
+                name: 'video_2.mp4',
                 format: 'mp4',
                 cover: '/image/video/video_2.png',
                 source: '/video/video_2.mp4',
@@ -42,7 +42,7 @@ const mockMethods: MockMethod[] = [
             type: 'video',
             items: [
               {
-                name: 'video_3',
+                name: 'video_3.mp4',
                 format: 'mp4',
                 cover: '/image/video/video_3.png',
                 source: '/video/video_3.mp4',
@@ -59,7 +59,7 @@ const mockMethods: MockMethod[] = [
             type: 'video',
             items: [
               {
-                name: 'video_4',
+                name: 'video_4.mp4',
                 format: 'mp4',
                 cover: '/image/video/video_4.png',
                 width: 650,
@@ -82,21 +82,21 @@ const mockMethods: MockMethod[] = [
                 cover: '/image/audio/audio_0.png',
                 time: 25000,
                 format: 'mp3',
-                name: '测试音频1',
+                name: '测试音频1.mp3',
                 source: '/audio/audio_0.mp3'
               },
               {
                 cover: '/image/audio/audio_1.png',
                 time: 16000,
                 format: 'mp3',
-                name: '测试音频2',
+                name: '测试音频2.mp3',
                 source: '/audio/audio_1.mp3'
               },
               {
                 cover: '/image/audio/audio_2.png',
                 time: 41000,
                 format: 'mp3',
-                name: '测试音频3',
+                name: '测试音频3.mp3',
                 source: '/audio/audio_2.mp3'
               }
             ]
@@ -109,14 +109,14 @@ const mockMethods: MockMethod[] = [
                 cover: '/image/audio/audio_3.png',
                 time: 14000,
                 format: 'mp3',
-                name: '测试音频4',
+                name: '测试音频4.mp3',
                 source: '/audio/audio_3.mp3'
               },
               {
                 cover: '/image/audio/audio_4.png',
                 time: 25000,
                 format: 'mp3',
-                name: '测试音频5',
+                name: '测试音频5.mp3',
                 source: '/audio/audio_4.mp3'
               }
             ]
@@ -129,25 +129,25 @@ const mockMethods: MockMethod[] = [
             type: 'text',
             items: [
               {
-                name: 'CherryBombOne',
+                name: 'CherryBombOne.ttf',
                 templateId: 0,
                 source: '/text/CherryBombOne-Regular.ttf',
                 format: 'truetype'
               },
               {
-                name: '刘建毛笔草书',
+                name: '刘建毛笔草书.ttf',
                 templateId: 0,
                 source: '/text/LiuJianMaoCao-Regular.ttf',
                 format: 'truetype'
               },
               {
-                name: 'Nabla彩色可变字体',
+                name: 'Nabla彩色可变字体.woff2',
                 templateId: 0,
                 source: '/text/Nabla彩色可变字体.woff2',
                 format: 'woff2'
               },
               {
-                name: 'MaShanZheng',
+                name: 'MaShanZheng.ttf',
                 templateId: 0,
                 source: '/text/MaShanZheng-Regular.ttf',
                 format: 'truetype'
@@ -162,7 +162,7 @@ const mockMethods: MockMethod[] = [
             type: 'image',
             items: [
               {
-                name: '贴图1',
+                name: '贴图1.gif',
                 cover: '/image/image/image_0.png',
                 source: '/image/image/image_0.gif',
                 format: 'gif',
@@ -171,7 +171,7 @@ const mockMethods: MockMethod[] = [
                 sourceFrame: 8
               },
               {
-                name: '贴图2',
+                name: '贴图2.gif',
                 cover: '/image/image/image_0.png',
                 source: '/image/image/image_0.gif',
                 format: 'gif',
@@ -180,7 +180,7 @@ const mockMethods: MockMethod[] = [
                 sourceFrame: 8
               },
               {
-                name: '贴图3',
+                name: '贴图3.gif',
                 cover: '/image/image/image_0.png',
                 source: '/image/image/image_0.gif',
                 format: 'gif',
@@ -189,7 +189,7 @@ const mockMethods: MockMethod[] = [
                 sourceFrame: 8
               },
               {
-                name: '贴图4',
+                name: '贴图4.gif',
                 cover: '/image/image/image_0.png',
                 source: '/image/image/image_0.gif',
                 format: 'gif',
@@ -198,7 +198,7 @@ const mockMethods: MockMethod[] = [
                 sourceFrame: 8
               },
               {
-                name: '贴图5',
+                name: '贴图5.gif',
                 cover: '/image/image/image_0.png',
                 source: '/image/image/image_0.gif',
                 format: 'gif',
@@ -213,7 +213,7 @@ const mockMethods: MockMethod[] = [
             type: 'image',
             items: [
               {
-                name: '贴图6',
+                name: '贴图6.gif',
                 cover: '/image/image/image_1.png',
                 source: '/image/image/image_1.gif',
                 format: 'gif',
@@ -222,7 +222,7 @@ const mockMethods: MockMethod[] = [
                 sourceFrame: 6
               },
               {
-                name: '贴图7',
+                name: '贴图7.gif',
                 cover: '/image/image/image_1.png',
                 source: '/image/image/image_1.gif',
                 format: 'gif',
@@ -231,7 +231,7 @@ const mockMethods: MockMethod[] = [
                 sourceFrame: 6
               },
               {
-                name: '贴图8',
+                name: '贴图8.gif',
                 cover: '/image/image/image_1.png',
                 source: '/image/image/image_1.gif',
                 format: 'gif',
@@ -240,7 +240,7 @@ const mockMethods: MockMethod[] = [
                 sourceFrame: 6
               },
               {
-                name: '贴图9',
+                name: '贴图9.gif',
                 cover: '/image/image/image_1.png',
                 source: '/image/image/image_1.gif',
                 format: 'gif',

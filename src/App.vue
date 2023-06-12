@@ -21,8 +21,9 @@
 <script setup lang="ts">
 import { MoreFilled } from '@element-plus/icons-vue'
 import { useWindowSize } from '@vueuse/core'
-import { DefineComponent, onMounted, ref } from 'vue'
+import { DefineComponent, inject, onMounted, onUnmounted, ref } from 'vue'
 import { useResize } from '~/common/composables/useResizeElement'
+import { FFmpegManager } from '~/common/composables/useFFmpeg'
 
 const { width } = useWindowSize()
 const dividerHorizontal = ref<DefineComponent | null>(null)
@@ -30,6 +31,10 @@ const trackContainer = ref<DefineComponent | null>(null)
 onMounted(() => {
   if (dividerHorizontal.value === null || trackContainer.value === null) return
   useResize(dividerHorizontal.value.$el, trackContainer.value.$el)
+})
+const ffmpeg = inject('ffmpeg') as FFmpegManager
+onUnmounted(() => {
+  ffmpeg.exit()
 })
 </script>
 <style lang="scss">

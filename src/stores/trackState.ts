@@ -10,7 +10,7 @@ import type {
 import { trackOrder } from '~/config/tracks'
 
 export const useTrackState = defineStore('trackState', () => {
-  const scale = ref(1)
+  const scale = ref(5)
   const trackList = ref<TrackList>([])
   const focusedItem = ref<TrackItem | undefined>()
 
@@ -98,6 +98,10 @@ export const useTrackState = defineStore('trackState', () => {
 
   function removeTrackItem(lineIndex: number, itemIndex: number) {
     const trackLine = trackList.value[lineIndex]
+    const trackItem = trackLine.list[itemIndex]
+    if (trackItem.type === 'image') {
+      URL.revokeObjectURL(trackItem.source)
+    }
     trackLine.list.splice(itemIndex, 1)
     if (trackLine.list.length === 0 && !trackLine.isMian)
       trackList.value.splice(lineIndex, 1)

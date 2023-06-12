@@ -32,7 +32,10 @@ function getOffsetX(e: DragEvent) {
  */
 function getOuterTarget(target: HTMLElement) {
   if (!isContains(target, ['tracks', 'track-line', 'track-list-content'])) {
-    while (!isContains(target, ['track-item', 'track-list-content'])) {
+    while (
+      target &&
+      !isContains(target, ['track-item', 'track-list-content'])
+    ) {
       target = target.parentElement as HTMLElement
     }
   }

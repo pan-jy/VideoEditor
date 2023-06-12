@@ -1,5 +1,5 @@
 import {
-  VideoPlay,
+  VideoCamera,
   Headset,
   Picture,
   EditPen,
@@ -11,7 +11,7 @@ import type { MenuItem } from '../types/resources'
 
 const sideBarMenu: MenuItem[] = [
   {
-    icon: VideoPlay,
+    icon: VideoCamera,
     type: 'video',
     title: '媒体'
   },

@@ -61,7 +61,7 @@
 <script setup lang="ts">
 import { Files } from '@element-plus/icons-vue'
 import { reactive, ref } from 'vue'
-import { fetchFile } from '~/common/utils/fetchFile'
+import { getFile } from '~/common/utils/fetchFile'
 import { useTrackState } from '~/stores/trackState'
 import {
   isContains,
@@ -146,7 +146,7 @@ async function getDraggedFiles(e: DragEvent) {
       source: string
       name: string
     }
-    files.push(await fetchFile(fileInfoJSON.source, fileInfoJSON.name))
+    files.push(await getFile(fileInfoJSON.source, fileInfoJSON.name))
   } else {
     // 上传的本地文件
     files.push(...(e.dataTransfer?.files ?? []))
@@ -159,12 +159,16 @@ async function getDraggedFiles(e: DragEvent) {
  * @param file 文件
  * @param e 拖拽时间回调
  */
-function getTrackItem(file: File, e: DragEvent) {
+async function getTrackItem(file: File, e: DragEvent) {
   const type = getResourcesType(file)
   if (type === 'image') return new ImageTrackItem(file, e, trackState.scale)
   if (type === 'text') return new TextTrackItem(file, e, trackState.scale)
   if (type === 'video') return new VideoTrackItem(file, e, trackState.scale)
-  if (type === 'audio') return new AudioTrackItem(file, e, trackState.scale)
+  if (type === 'audio') {
+    const trackItem = new AudioTrackItem(file, e, trackState.scale)
+    await trackItem.init(file)
+    return trackItem
+  }
   return null
 }
 
@@ -180,8 +184,8 @@ async function onDrop(e: DragEvent) {
     e.dataTransfer?.clearData()
   } else {
     const files = await getDraggedFiles(e)
-    files.forEach((file) => {
-      const trackItem = getTrackItem(file, e)
+    files.forEach(async (file) => {
+      const trackItem = await getTrackItem(file, e)
       if (trackItem === null) return
       const type = trackItem.type
       if (trackState.initTrackList(type, trackItem)) return
