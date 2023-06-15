@@ -2,7 +2,7 @@ import { AudioTrackItem, TrackLine, VideoTrackItem } from '~/types/tracks'
 
 export class Command {
   static genVideoAAC(path: string, videoName: string) {
-    return `${path}${videoName}_A.acc`
+    return `${path}${videoName}_A.aac`
   }
   /**
    * 音视频分离
@@ -21,7 +21,7 @@ export class Command {
         '-i',
         videoPath,
         '-acodec',
-        '-copy',
+        'copy',
         '-vn',
         audioPath
       ],

@@ -24,10 +24,10 @@ class BaseTrackItem {
     const { name, format } = getFileName(file.name)
     this.name = name
     this.format = format
-    this.frameCount = 300
-    this.setStart(event, scale)
+    this.frameCount = 150
     this.offsetL = 0
     this.offsetR = 0
+    this.setStart(event, scale)
     this.source = URL.createObjectURL(file)
   }
 
@@ -59,7 +59,41 @@ class VideoTrackItem extends BaseTrackItem {
   }
 
   async init() {
-    return
+    this.getDeviceFPS().then((fps) => {
+      this.fps = fps
+    })
+    const videoElement = await this.getVideoElement()
+    this.time = videoElement.duration
+    this.width = videoElement.videoWidth
+    this.height = videoElement.videoHeight
+    this.setFrameCount(this.time * 30)
+  }
+
+  private getVideoElement(): Promise<HTMLVideoElement> {
+    return new Promise((resolve) => {
+      const videoElement = document.createElement('video') // 创建 HTMLVideoElement 元素
+      videoElement.addEventListener('loadedmetadata', () => {
+        resolve(videoElement)
+      })
+      videoElement.src = this.source
+    })
+  }
+
+  private getDeviceFPS(): Promise<number> {
+    return new Promise((resolve) => {
+      const startTime = performance.now()
+      let frameCount = 0
+      function updateFrameRate() {
+        frameCount++
+        if (performance.now() - startTime >= 500) {
+          cancelAnimationFrame(animationId)
+          resolve(Math.round(frameCount / 5) * 10)
+        } else {
+          animationId = requestAnimationFrame(updateFrameRate)
+        }
+      }
+      let animationId = requestAnimationFrame(updateFrameRate)
+    })
   }
 }
 class AudioTrackItem extends BaseTrackItem {
@@ -79,8 +113,8 @@ class AudioTrackItem extends BaseTrackItem {
     // audio.load()
   }
 
-  async init(file: File) {
-    const buffer = await getFileBuffer(file)
+  async init() {
+    const buffer = await getFileBuffer(this.file)
     const audioContext = new AudioContext()
     const audioBuffer = await audioContext.decodeAudioData(buffer)
     this.time = audioBuffer.duration

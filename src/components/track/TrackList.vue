@@ -163,10 +163,14 @@ async function getTrackItem(file: File, e: DragEvent) {
   const type = getResourcesType(file)
   if (type === 'image') return new ImageTrackItem(file, e, trackState.scale)
   if (type === 'text') return new TextTrackItem(file, e, trackState.scale)
-  if (type === 'video') return new VideoTrackItem(file, e, trackState.scale)
+  if (type === 'video') {
+    const trackItem = new VideoTrackItem(file, e, trackState.scale)
+    await trackItem.init()
+    return trackItem
+  }
   if (type === 'audio') {
     const trackItem = new AudioTrackItem(file, e, trackState.scale)
-    await trackItem.init(file)
+    await trackItem.init()
     return trackItem
   }
   return null

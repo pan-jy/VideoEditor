@@ -40,6 +40,7 @@ declare module '@vue/runtime-core' {
     TrackLineItem: typeof import('./src/components/track/TrackLineItem.vue')['default']
     TrackList: typeof import('./src/components/track/TrackList.vue')['default']
     TracksContainer: typeof import('./src/components/container/TracksContainer.vue')['default']
+    VideoFrame: typeof import('./src/components/track/trackItem/VideoFrame.vue')['default']
     VideoTrack: typeof import('./src/components/track/trackItem/VideoTrack.vue')['default']
   }
   export interface ComponentCustomProperties {
