@@ -96,10 +96,20 @@ export const useTrackState = defineStore('trackState', () => {
     })
   }
 
-  function removeTrackItem(lineIndex: number, itemIndex: number) {
+  /**
+   * 移除对应位置的 trackItem
+   * @param lineIndex 行下标
+   * @param itemIndex item 下标
+   * @param deleteF 永久删除
+   */
+  function removeTrackItem(
+    lineIndex: number,
+    itemIndex: number,
+    deleteF?: boolean
+  ) {
     const trackLine = trackList.value[lineIndex]
     const trackItem = trackLine.list[itemIndex]
-    if (trackItem.type === 'image') {
+    if (deleteF) {
       URL.revokeObjectURL(trackItem.source)
     }
     trackLine.list.splice(itemIndex, 1)

@@ -63,7 +63,7 @@ class VideoTrackItem extends BaseTrackItem {
       this.fps = fps
     })
     const videoElement = await this.getVideoElement()
-    this.time = videoElement.duration
+    this.time = Math.floor(videoElement.duration * 10) / 10
     this.width = videoElement.videoWidth
     this.height = videoElement.videoHeight
     this.setFrameCount(this.time * 30)
@@ -117,7 +117,7 @@ class AudioTrackItem extends BaseTrackItem {
     const buffer = await getFileBuffer(this.file)
     const audioContext = new AudioContext()
     const audioBuffer = await audioContext.decodeAudioData(buffer)
-    this.time = audioBuffer.duration
+    this.time = Math.floor(audioBuffer.duration * 10) / 10
     this.setFrameCount(this.time * 30)
   }
 }

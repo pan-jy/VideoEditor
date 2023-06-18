@@ -33,7 +33,11 @@ function operation(type: string) {
     const focusedItemIdx = trackState.focusedItemIdx
     if (focusedItemIdx === undefined) return
     trackState.focusedItem = undefined
-    trackState.removeTrackItem(focusedItemIdx.lineIdx, focusedItemIdx.itemIdx)
+    trackState.removeTrackItem(
+      focusedItemIdx.lineIdx,
+      focusedItemIdx.itemIdx,
+      true
+    )
   }
 }
 </script>

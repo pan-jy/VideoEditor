@@ -280,8 +280,10 @@ export class FFmpegManager {
   ) {
     const framePath = `${this.pathConfig.framePath}${fileName}`
     const filePath = `${fileName}.${format}`
+    // 如果视频不存在
     if (!this.fileExist(this.pathConfig.resourcePath, filePath))
       return { framePath }
+    // 如果帧已存在
     if (this.fileExist(this.pathConfig.framePath, fileName))
       return { framePath }
     this.mkdir([framePath])
@@ -292,6 +294,8 @@ export class FFmpegManager {
       format
     )
     await this.createTask(commands)
+    // this.logDir(this.pathConfig.framePath)
+    // this.logDir(framePath)
     return {
       framePath
     }
@@ -342,7 +346,8 @@ export class FFmpegManager {
   getFrame(videoName: string, frameIndex: number) {
     const framePath = `${this.pathConfig.framePath}${videoName}`
     const fileName = `/pic-${frameIndex}`
-    return this.getFileBlob(framePath, fileName, 'jpg')
+    // return this.getFileBlob(framePath, fileName, 'jpg')
+    return this.getFileBuffer(framePath, fileName, 'jpg')
   }
   // 获取播放视频帧图片
   getPFrame(videoName: string, frameIndex: number) {
