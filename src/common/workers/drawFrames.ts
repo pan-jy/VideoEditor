@@ -1,4 +1,5 @@
 export type {}
+import type { CanvasAttr, FramesInfo, VideoTrackInfo } from '~/types/canvas'
 let frames: Frames
 self.addEventListener('message', (e) => {
   console.log(e.data)
@@ -12,26 +13,6 @@ self.addEventListener('message', (e) => {
     frames.setConfig(e.data.canvasAttr, e.data.videoTrackInfo)
   }
 })
-
-type CanvasAttr = {
-  width: number
-  height: number
-}
-
-type FramesInfo = {
-  height: number
-  width: number
-  frameCount: number
-  maxFrame: number
-}
-
-type VideoTrackInfo = {
-  start: number
-  end: number
-  videoW: number
-  videoH: number
-  offsetL: number
-}
 
 class Frames {
   private canvas: OffscreenCanvas
@@ -76,7 +57,7 @@ class Frames {
   ) {
     const frameBlob = new Blob([frameBuffer], { type: 'image/jpeg' })
     let imageBitmap = this.imageBitmaps[frameIndex]
-    console.log(frameIndex, frameBlob)
+    // console.log(frameIndex, frameBlob)
     if (!imageBitmap) {
       imageBitmap = await createImageBitmap(frameBlob)
       this.imageBitmaps[frameIndex] = imageBitmap

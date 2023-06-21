@@ -24,7 +24,7 @@ class BaseTrackItem {
     const { name, format } = getFileName(file.name)
     this.name = name
     this.format = format
-    this.frameCount = 150
+    this.frameCount = 90
     this.offsetL = 0
     this.offsetR = 0
     this.setStart(event, scale)
@@ -38,7 +38,7 @@ class BaseTrackItem {
 
   setFrameCount(frameCount: number) {
     this.frameCount = Math.round(frameCount)
-    this.end = this.start + frameCount
+    this.end = this.start + this.frameCount
   }
 }
 

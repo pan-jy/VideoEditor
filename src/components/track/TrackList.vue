@@ -17,14 +17,14 @@
           start: trackState.focusedItem?.start,
           end: trackState.focusedItem?.end
         }"
-        @setTiming="(v:number) => (timing = v)"
       />
       <div
         v-show="trackList.length > 0"
         class="timing-line"
         :style="{
           left: `${
-            frameCountToPixel(trackState.scale, timing) + trackLeftStart
+            frameCountToPixel(trackState.scale, playerState.playingFrame) +
+            trackLeftStart
           }px`,
           top: `${scrollVal.scrollTop}px`
         }"
@@ -79,10 +79,10 @@ import {
 } from '~/config/tracks'
 import { TrackItemIdx } from '~/types/tracks'
 import { frameCountToPixel } from '~/common/utils/drawTimeLine'
-
-const timing = ref(0)
+import { usePlayerState } from '~/stores/playerState'
 
 const trackState = useTrackState()
+const playerState = usePlayerState()
 const trackList = trackState.trackList
 // 处理缩放事件
 function zoomScale(e: WheelEvent) {
@@ -179,6 +179,7 @@ async function getTrackItem(file: File, e: DragEvent) {
 async function onDrop(e: DragEvent) {
   isDragging.value = false
   const trackItemIdx = e.dataTransfer?.getData('trackItemIdx')
+  // 如果移动的是已有 trackItem
   if (trackItemIdx) {
     const { lineIdx, itemIdx } = JSON.parse(trackItemIdx) as TrackItemIdx
     const trackItem = trackList[lineIdx].list[itemIdx]

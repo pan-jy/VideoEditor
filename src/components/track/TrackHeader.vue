@@ -12,7 +12,7 @@
     <div class="track-header-right">
       <el-slider
         :max="10"
-        :min="0"
+        :min="1"
         show-input
         v-model="trackState.scale"
         size="small"

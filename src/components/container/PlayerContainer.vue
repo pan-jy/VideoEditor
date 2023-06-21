@@ -4,19 +4,15 @@
       <span>播放器</span>
     </header>
     <main class="player-main">
-      <!-- <video src="/video/video_1.mp4" controls autoplay></video> -->
+      <Player />
     </main>
     <footer class="player-footer">
-      <span class="player-footer-time">00:00:00 / 00:00:00</span>
-      <el-icon v-if="true"><VideoPlay /></el-icon>
-      <el-icon v-else><VideoPause /></el-icon>
+      <PlayerControl />
     </footer>
   </div>
 </template>
 
-<script setup lang="ts">
-import { VideoPause, VideoPlay } from '@element-plus/icons-vue'
-</script>
+<script setup lang="ts"></script>
 
 <style lang="scss" scoped>
 @import '~/styles/mixins.scss';
@@ -41,29 +37,11 @@ import { VideoPause, VideoPlay } from '@element-plus/icons-vue'
     flex: 1;
     align-items: center;
     width: 100%;
-    video {
-      width: inherit;
-    }
   }
 
   &-footer {
-    position: relative;
-    display: flex;
-    align-items: center;
     height: 40px;
-    padding: 0 20px;
     border-top: solid 1px var(--ep-border-color);
-    span {
-      font-size: 13px;
-    }
-    i {
-      position: absolute;
-      left: 50%;
-      font-size: 28px;
-      cursor: pointer;
-      opacity: 0.8;
-      transform: translateX(-50%);
-    }
   }
 }
 </style>

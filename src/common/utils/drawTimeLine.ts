@@ -60,7 +60,7 @@ function pixelToFrameCount(scale: number, pixel: number) {
   if (scale < 3) {
     frameCount *= 6
   }
-  return frameCount
+  return Math.round(frameCount)
 }
 /**
  * 根据缩放比调整 step ( setp 个小单元格构成一个大单元格)

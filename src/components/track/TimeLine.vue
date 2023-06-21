@@ -20,6 +20,7 @@ import type {
 } from '~/types/canvas'
 import { isDark } from '~/common/composables/useDark'
 import { useSideBarState } from '~/stores/sideBarState'
+import { usePlayerState } from '~/stores/playerState'
 
 const props = withDefaults(
   defineProps<{
@@ -39,13 +40,13 @@ const props = withDefaults(
   }
 )
 
-const emits = defineEmits(['setTiming'])
+const playerState = usePlayerState()
 const getTiming = (e: MouseEvent) => {
   const timing = pixelToFrameCount(
     props.scale,
     Math.max(0, e.offsetX + props.start)
   )
-  emits('setTiming', timing)
+  playerState.playingFrame = timing
 }
 
 const canvasContainer = ref<HTMLDivElement>()

@@ -1,8 +1,9 @@
 <template>
   <div class="video" v-loading="loading">
     <div class="video-title">
-      <el-icon><VideoCamera /></el-icon>
-      <span>{{ trackItem.name }}.{{ trackItem.format }}</span>
+      <el-icon class="icon"><VideoCamera /></el-icon>
+      <span class="name">{{ trackItem.name }}.{{ trackItem.format }}</span>
+      <span class="time">{{ formatTime(trackItem.time * 1000).str }}</span>
     </div>
     <div class="video-frames">
       <VideoFrame :trackItem="trackItem" :loaded="!loading" />
@@ -16,9 +17,13 @@ import { VideoCamera } from '@element-plus/icons-vue'
 import type { FFmpegManager } from '~/common/composables/useFFmpeg'
 import { computed, inject, ref, watch } from 'vue'
 import { VideoTrackItem } from '~/types/tracks'
+import { formatTime } from '~/common/utils/timeFormat'
+import { usePlayerState } from '~/stores/playerState'
+
 const props = defineProps<{ trackItem: VideoTrackItem }>()
 
 const ffmpeg = inject('ffmpeg') as FFmpegManager
+const playerState = usePlayerState()
 
 const waveStyle = computed(() => {
   const { start, end, offsetL, offsetR, frameCount } = props.trackItem
@@ -33,6 +38,7 @@ const waveStyle = computed(() => {
 
 const waveFileUrl = ref('')
 const loading = ref(true)
+playerState.inLoadingCount++
 async function initVideo() {
   const { name, file, format, frameCount, time, width, height } =
     props.trackItem
@@ -46,6 +52,7 @@ async function initVideo() {
     await ffmpeg.genWave(name, frameCount)
     waveFileUrl.value = ffmpeg.getWavePng(name)
     loading.value = false
+    playerState.inLoadingCount--
   }
 }
 
@@ -65,12 +72,16 @@ watch(() => [props.trackItem.time, ffmpeg.isLoaded()], initVideo, {
     align-items: center;
     height: 25%;
     font-size: 80%;
-    line-height: 25%;
+    line-height: 23%;
     white-space: nowrap;
     background-color: var(--ep-color-primary);
 
-    .ep-icon {
-      margin: 0 5px;
+    .icon {
+      margin: 0 10px 0 5px;
+    }
+
+    .name {
+      margin-right: 15px;
     }
   }
 

@@ -7,6 +7,26 @@ type CanvasTextBaseline =
   | 'top'
 type CanvasTextAlign = 'center' | 'end' | 'left' | 'right' | 'start'
 
+type CanvasAttr = {
+  width: number
+  height: number
+}
+
+type FramesInfo = {
+  height: number
+  width: number
+  frameCount: number
+  maxFrame: number
+}
+
+type VideoTrackInfo = {
+  start: number
+  end: number
+  videoW: number
+  videoH: number
+  offsetL: number
+}
+
 interface CanvasConfig {
   width: number
   height: number
@@ -36,4 +56,12 @@ interface UserConfig {
   }
 }
 
-export type { CanvasConfig, UserConfig, CanvasTextBaseline, CanvasTextAlign }
+export type {
+  CanvasConfig,
+  CanvasAttr,
+  FramesInfo,
+  VideoTrackInfo,
+  UserConfig,
+  CanvasTextBaseline,
+  CanvasTextAlign
+}

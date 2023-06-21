@@ -35,6 +35,7 @@ export class Command {
     pathConfig: Record<string, string>,
     trackStart: number,
     trackLine: TrackLine,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     trackAttrMap: Record<string, any>
   ) {
     const inputFiles: string[] = []

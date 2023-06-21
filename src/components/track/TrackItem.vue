@@ -42,6 +42,7 @@ import {
   frameCountToPixel,
   pixelToFrameCount
 } from '~/common/utils/drawTimeLine'
+import { trackCheckPlaying } from './trackCheckPlaying'
 
 const props = defineProps<{
   trackItem: TrackItem
@@ -49,6 +50,8 @@ const props = defineProps<{
 }>()
 
 const trackState = useTrackState()
+
+trackCheckPlaying(props.trackItem)
 
 const left = ref()
 const width = ref()
