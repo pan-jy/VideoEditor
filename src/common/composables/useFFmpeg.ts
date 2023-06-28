@@ -2,7 +2,7 @@ import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg'
 import type { CreateFFmpegOptions, FFmpeg } from '@ffmpeg/ffmpeg'
 import { reactive, ref, watch } from 'vue'
 import { Command } from '../utils/ffmpegCommand'
-import { TrackLine } from '~/types/tracks'
+import { TrackItem } from '~/types/tracks'
 
 interface Task {
   instance: Promise<unknown>
@@ -164,7 +164,12 @@ export class FFmpegManager {
   }
 
   fileExist(filePath: string, fileName: string) {
-    return this.readDir(filePath).indexOf(fileName) > -1
+    try {
+      return this.readDir(filePath).indexOf(fileName) > -1
+    } catch (e) {
+      console.log(e)
+      return false
+    }
   }
 
   async writeFile(
@@ -215,16 +220,14 @@ export class FFmpegManager {
   // 音频合成
   async mergeAudio(
     start: number,
-    trackLine: TrackLine,
-    trackAttrMap: Record<string, unknown>,
+    itemList: TrackItem[],
     fileName: string,
     filePath: string
   ) {
     const { commands } = this.baseCommand.mergeAudio(
       this.pathConfig,
       start,
-      trackLine,
-      trackAttrMap
+      itemList
     )
     if (this.audioCache.indexOf(commands.join('')) > -1) return false
     this.audioCache = [commands.join('')]
@@ -404,16 +407,16 @@ export class FFmpegManager {
     return this.getFileURL(this.pathConfig.wavePath, sourceName, 'png')
   }
   // 获取音频
-  async getAudio(trackLine: TrackLine, trackAttrMap: Record<string, unknown>) {
-    const fileName = `audio.mp3`
-    const filePath = `${this.pathConfig.audioPath}/${fileName}`
+  async getAudio(itemList: TrackItem[]) {
+    const fileName = 'audio.mp3'
+    const filePath = `${this.pathConfig.audioPath}${fileName}`
     let start = 0
     let end = 0
-    trackLine.list.forEach((trackItem) => {
+    itemList.forEach((trackItem) => {
       start = Math.min(trackItem.start, start)
       end = Math.max(trackItem.end, end)
     })
-    await this.mergeAudio(start, trackLine, trackAttrMap, fileName, filePath)
+    await this.mergeAudio(start, itemList, fileName, filePath)
     if (!this.fileExist(this.pathConfig.audioPath, fileName)) {
       return {
         start,

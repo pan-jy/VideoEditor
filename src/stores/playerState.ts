@@ -10,8 +10,6 @@ export const usePlayerState = defineStore('playerState', () => {
 
   // 当前播放帧
   const playingFrame = ref(0)
-  // 音频播放帧
-  const playAudioFrame = ref(0)
   // 当前播放帧位于 start 和 end 之间的 (id, trackItem)
   const playTargetTrackMap = ref(new Map())
   // ffmpeg 处理中的数目
@@ -77,7 +75,6 @@ export const usePlayerState = defineStore('playerState', () => {
   return {
     isPause,
     playingFrame,
-    playAudioFrame,
     playTargetTrackMap,
     inLoadingCount,
     audioPlayData,

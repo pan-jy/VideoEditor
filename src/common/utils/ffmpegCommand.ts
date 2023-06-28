@@ -1,4 +1,4 @@
-import { AudioTrackItem, TrackLine, VideoTrackItem } from '~/types/tracks'
+import { AudioTrackItem, TrackItem, VideoTrackItem } from '~/types/tracks'
 
 export class Command {
   static genVideoAAC(path: string, videoName: string) {
@@ -34,9 +34,7 @@ export class Command {
   mergeAudio(
     pathConfig: Record<string, string>,
     trackStart: number,
-    trackLine: TrackLine,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    trackAttrMap: Record<string, any>
+    itemList: TrackItem[]
   ) {
     const inputFiles: string[] = []
     const filters: string[] = []
@@ -44,30 +42,28 @@ export class Command {
     const { resourcePath, audioPath } = pathConfig
     const outPath = `${audioPath}/audio.mp3`
     let fileIndex = 0
-    trackLine.list.forEach((trackItem) => {
-      if (trackAttrMap[trackItem.id] && !trackAttrMap[trackItem.id].silent) {
-        const { name, format, start, end, offsetL, offsetR } = trackItem as
-          | VideoTrackItem
-          | AudioTrackItem
-        let filterTag = `${fileIndex}`
-        if (offsetL > 0 || offsetR > 0) {
-          const clipS = (offsetL / 30).toFixed(2)
-          const clipE = ((end - start + offsetL) / 30).toFixed(2)
-          filters.push(`[${filterTag}]atrim=${clipS}:${clipE}[a${filterTag}]`)
-          filterTag = `a${fileIndex}`
-        }
-        const delay = Math.floor(((start - trackStart) / 30) * 1000)
-        const resourceFile = `${resourcePath}${name}.${format}`
-        inputFiles.push('-i', resourceFile)
-        filters.push(`[${filterTag}]adelay=${delay}|${delay}[s${fileIndex}]`)
-        filterSort.push(`[s${fileIndex}]`)
-        fileIndex++
+    itemList.forEach((trackItem) => {
+      const { name, format, start, end, offsetL, offsetR } = trackItem as
+        | VideoTrackItem
+        | AudioTrackItem
+      let filterTag = `${fileIndex}`
+      if (offsetL > 0 || offsetR > 0) {
+        const clipS = (offsetL / 30).toFixed(2)
+        const clipE = ((end - start + offsetL) / 30).toFixed(2)
+        filters.push(`[${filterTag}]atrim=${clipS}:${clipE}[a${filterTag}]`)
+        filterTag = `a${fileIndex}`
       }
+      const delay = Math.floor(((start - trackStart) / 30) * 1000)
+      const resourceFile = `${resourcePath}${name}.${format}`
+      inputFiles.push('-i', resourceFile)
+      filters.push(`[${filterTag}]adelay=${delay}|${delay}[s${fileIndex}]`)
+      filterSort.push(`[s${fileIndex}]`)
+      fileIndex++
     })
     filters.push(filterSort.join(''))
-    const filterComplex = `${filters.join(';')}amix=input=${
+    const filterComplex = `${filters.join(';')}amix=inputs=${
       filterSort.length
-    }:duration=dropout_transition=0`
+    }:duration=longest:dropout_transition=0`
     return {
       commands: [
         ...inputFiles,
