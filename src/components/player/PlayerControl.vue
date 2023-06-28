@@ -1,6 +1,9 @@
 <template>
   <div class="control">
-    <span class="control-time">{{ playTime }} / {{ allTime }}</span>
+    <span class="control-time">
+      <span class="control-time__play">{{ playTime }}</span>
+      / {{ allTime }}
+    </span>
     <el-button
       @click="playControl(playerState.isPause)"
       class="control-btn"
@@ -66,6 +69,9 @@ function playControl(isPause: boolean) {
 
   &-time {
     font-size: 13px;
+    &__play {
+      color: var(--ep-color-primary);
+    }
   }
 
   &-btn {

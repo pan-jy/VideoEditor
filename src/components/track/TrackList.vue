@@ -77,7 +77,7 @@ import {
   AudioTrackItem,
   trackLeftStart
 } from '~/config/tracks'
-import { TrackItemIdx } from '~/types/tracks'
+import { TrackItem, TrackItemIdx } from '~/types/tracks'
 import { frameCountToPixel } from '~/common/utils/drawTimeLine'
 import { usePlayerState } from '~/stores/playerState'
 
@@ -161,19 +161,19 @@ async function getDraggedFiles(e: DragEvent) {
  */
 async function getTrackItem(file: File, e: DragEvent) {
   const type = getResourcesType(file)
-  if (type === 'image') return new ImageTrackItem(file, e, trackState.scale)
-  if (type === 'text') return new TextTrackItem(file, e, trackState.scale)
-  if (type === 'video') {
-    const trackItem = new VideoTrackItem(file, e, trackState.scale)
+  let trackItem: TrackItem | null = null
+  if (type === 'image')
+    trackItem = new ImageTrackItem(file, e, trackState.scale)
+  else if (type === 'text')
+    trackItem = new TextTrackItem(file, e, trackState.scale)
+  else if (type === 'video')
+    trackItem = new VideoTrackItem(file, e, trackState.scale)
+  else if (type === 'audio')
+    trackItem = new AudioTrackItem(file, e, trackState.scale)
+  if (trackItem) {
     await trackItem.init()
-    return trackItem
   }
-  if (type === 'audio') {
-    const trackItem = new AudioTrackItem(file, e, trackState.scale)
-    await trackItem.init()
-    return trackItem
-  }
-  return null
+  return trackItem
 }
 
 async function onDrop(e: DragEvent) {

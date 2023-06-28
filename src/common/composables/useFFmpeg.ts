@@ -280,24 +280,28 @@ export class FFmpegManager {
   ) {
     const framePath = `${this.pathConfig.framePath}${fileName}`
     const filePath = `${fileName}.${format}`
+
     // 如果视频不存在
     if (!this.fileExist(this.pathConfig.resourcePath, filePath))
-      return { framePath }
-    // 如果帧已存在
-    if (this.fileExist(this.pathConfig.framePath, fileName))
-      return { framePath }
-    this.mkdir([framePath])
-    const { commands } = this.baseCommand.genFrame(
-      `${this.pathConfig.resourcePath}${filePath}`,
-      framePath,
-      size,
-      format
-    )
-    await this.createTask(commands)
-    // this.logDir(this.pathConfig.framePath)
-    // this.logDir(framePath)
+      return { framePath, frameCount: 0 }
+    // 如果帧不存在
+    if (!this.fileExist(this.pathConfig.framePath, fileName)) {
+      this.mkdir([framePath])
+      const { commands } = this.baseCommand.genFrame(
+        `${this.pathConfig.resourcePath}${filePath}`,
+        framePath,
+        size,
+        format
+      )
+      await this.createTask(commands)
+    }
+    this.logDir(this.pathConfig.framePath)
+    this.logDir(framePath)
+    const frameCount = this.readDir(framePath).length - 2
+
     return {
-      framePath
+      framePath,
+      frameCount
     }
   }
   /**

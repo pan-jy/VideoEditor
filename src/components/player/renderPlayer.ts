@@ -1,7 +1,7 @@
 import { onMounted, reactive, Ref, ref, watch } from 'vue'
 import { FFmpegManager } from '~/common/composables/useFFmpeg'
 import { useThrottleFn, useDebounceFn } from '@vueuse/core'
-import { TrackItem, VideoTrackItem } from '~/types/tracks'
+import { ImageTrackItem, TrackItem, VideoTrackItem } from '~/types/tracks'
 import { usePlayerState } from '~/stores/playerState'
 import { CanvasTextBaseline, CanvasTextAlign, CanvasAttr } from '~/types/canvas'
 
@@ -194,7 +194,7 @@ export class RenderPlayer {
   ): Promise<boolean> {
     return new Promise((resolve) => {
       const { left, top, drawW, drawH } = this.computedItemShowArea(trackItem)
-      const { type, start, end, offsetL, name } = trackItem
+      const { type, start, end, offsetL, name, format } = trackItem
       if (frameIndex > end) {
         resolve(true)
       } else if (type === 'video') {
@@ -217,7 +217,37 @@ export class RenderPlayer {
           resolve(true)
         })
       } else if (type === 'image') {
-        resolve(true)
+        const { width, height, sourceFrame } = trackItem as ImageTrackItem
+        let frameBlob: Blob
+        if (format === 'gif' && sourceFrame !== 0) {
+          frameIndex = Math.max(frameIndex - start, 1)
+          const showFrame = frameIndex % sourceFrame
+          frameBlob = this.ffmpeg.getGifFrame(
+            name,
+            showFrame === 0 ? sourceFrame : showFrame
+          )
+        } else {
+          frameBlob = this.ffmpeg.getFileBlob(
+            this.ffmpeg.pathConfig.resourcePath,
+            name,
+            format
+          )
+        }
+
+        createImageBitmap(frameBlob).then((imageBitmap) => {
+          this.preRenderContext?.drawImage(
+            imageBitmap,
+            0,
+            0,
+            width,
+            height,
+            left,
+            top,
+            drawW,
+            drawH
+          )
+          resolve(true)
+        })
       } else if (type === 'text') {
         resolve(true)
       } else {
@@ -245,8 +275,8 @@ export class RenderPlayer {
     const { type } = trackItem
     let drawW = canvasW
     let drawH = canvasH
-    if (type === 'video') {
-      const { width, height } = trackItem as VideoTrackItem
+    if (type === 'video' || type === 'image') {
+      const { width, height } = trackItem as VideoTrackItem | ImageTrackItem
       // 按高缩放后 trackItem 的宽度
       const scaleW = Math.floor((canvasH / height) * width)
       // 按宽缩放后 trackItem 的高度
@@ -255,6 +285,11 @@ export class RenderPlayer {
         drawH = scaleH
       } else if (scaleH > canvasH) {
         drawW = scaleW
+      } else {
+        if (type === 'image') {
+          drawW = width
+          drawH = height
+        }
       }
     }
     const left = Math.floor((canvasW - drawW) / 2)

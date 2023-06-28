@@ -15,15 +15,7 @@ export const useTrackState = defineStore('trackState', () => {
   const focusedItem = ref<TrackItem | undefined>()
 
   const focusedItemIdx = computed((): TrackItemIdx | undefined => {
-    if (focusedItem.value === undefined) return
-    for (const lineIdx in trackList.value) {
-      const itemList = trackList.value[lineIdx].list
-      for (const itemIdx in itemList) {
-        if (itemList[itemIdx] === focusedItem.value)
-          return { lineIdx: parseInt(lineIdx), itemIdx: parseInt(itemIdx) }
-      }
-    }
-    return undefined
+    return getItemIdx(focusedItem.value)
   })
 
   // 监听列表变化，对列表进行排序
@@ -33,6 +25,25 @@ export const useTrackState = defineStore('trackState', () => {
       trackLine.list.sort((a, b) => a.start - b.start)
     })
   })
+
+  function getItemIdx(
+    trackItem: TrackItem | undefined
+  ): TrackItemIdx | undefined {
+    if (!trackItem) return
+    for (const lineIdx in trackList.value) {
+      const itemList = trackList.value[lineIdx].list
+      for (const itemIdx in itemList) {
+        if (itemList[itemIdx].id === trackItem.id)
+          return { lineIdx: parseInt(lineIdx), itemIdx: parseInt(itemIdx) }
+      }
+    }
+    return
+  }
+
+  function getTrackItem(trackItemIdx: TrackItemIdx): TrackItem {
+    const { lineIdx, itemIdx } = trackItemIdx
+    return trackList.value[lineIdx].list[itemIdx]
+  }
 
   /**
    * 判断该轨道当前位置能否插入
@@ -124,6 +135,8 @@ export const useTrackState = defineStore('trackState', () => {
     trackList,
     initTrackList,
     insertToTrackList,
-    removeTrackItem
+    removeTrackItem,
+    getItemIdx,
+    getTrackItem
   }
 })

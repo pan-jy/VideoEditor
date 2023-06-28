@@ -104,13 +104,6 @@ class AudioTrackItem extends BaseTrackItem {
     super(file, event, scale)
     this.time = 0
     this.cover = ''
-    // const audio = new Audio()
-    // audio.src = this.source
-    // audio.addEventListener('loadedmetadata', () => {
-    //   this.time = audio.duration
-    //   this.setFrameCount(this.time * 30)
-    // })
-    // audio.load()
   }
 
   async init() {
@@ -130,6 +123,10 @@ class TextTrackItem extends BaseTrackItem {
     this.templateId = 0
     this.content = '默认文本'
   }
+
+  async init() {
+    return
+  }
 }
 class ImageTrackItem extends BaseTrackItem {
   cover: string
@@ -143,6 +140,22 @@ class ImageTrackItem extends BaseTrackItem {
     this.width = 100
     this.height = 100
     this.sourceFrame = 0
+  }
+
+  async init() {
+    const imgElement = await this.getImageElement()
+    this.width = imgElement.width
+    this.height = imgElement.height
+  }
+
+  getImageElement(): Promise<HTMLImageElement> {
+    return new Promise((resolve) => {
+      const imgElement = new Image()
+      imgElement.addEventListener('load', () => {
+        resolve(imgElement)
+      })
+      imgElement.src = this.source
+    })
   }
 }
 // 指定轨道
