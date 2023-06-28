@@ -58,8 +58,13 @@ export class RenderPlayer {
     this.initWatch()
   }
 
-  private getFont(size = 14) {
-    return `${size}px -apple-system, ".SFNSText-Regular", "SF UI Text", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", "WenQuanYi Zen Hei", "Microsoft YaHei", Arial, sans-serif`
+  private getFont(size = 14, bold = false, fontName?: string) {
+    let font = bold === true ? 'bold ' : ''
+    font += `${size}px `
+    if (fontName) font += `${fontName}, sans-serif`
+    else
+      font += `-apple-system, ".SFNSText-Regular", "SF UI Text", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", "WenQuanYi Zen Hei", "Microsoft YaHei", Arial, sans-serif`
+    return font
   }
 
   private initWatch() {
@@ -249,6 +254,14 @@ export class RenderPlayer {
           resolve(true)
         })
       } else if (type === 'text') {
+        const fontSize = 50
+        const color = 'green'
+        if (this.preRenderContext) {
+          this.preRenderContext.font = this.getFont(fontSize, false, name)
+          console.log(this.preRenderContext.font)
+          this.preRenderContext.fillStyle = color
+          this.preRenderContext.fillText('默认文本', 0, 0 + fontSize)
+        }
         resolve(true)
       } else {
         resolve(true)

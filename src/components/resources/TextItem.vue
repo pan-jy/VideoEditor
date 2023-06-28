@@ -1,6 +1,6 @@
 <template>
   <div class="text-item" :style="style">
-    {{ textItem.name }}
+    {{ name }}
   </div>
 </template>
 
@@ -9,18 +9,19 @@ import { onMounted } from 'vue'
 import type { TextItem } from '~/types/resources'
 const props = defineProps<{ textItem: TextItem }>()
 
+const name = props.textItem.name.split('.').slice(0, -1).join('')
 const style = {
-  fontFamily: `${props.textItem.name}, sans-serif`
+  fontFamily: `${name}, sans-serif`
 }
 onMounted(() => {
-  const style = document.createElement('style')
-  style.textContent = `
+  const styleEle = document.createElement('style')
+  styleEle.textContent = `
     @font-face {
-      font-family: ${props.textItem.name};
+      font-family: ${name};
       src: url(${props.textItem.source}) format(${props.textItem.format});
     }
   `
-  document.head.appendChild(style)
+  document.head.appendChild(styleEle)
 })
 </script>
 
@@ -34,7 +35,7 @@ onMounted(() => {
   overflow: hidden;
   font-size: 1.5rem;
   color: var(--ep-text-color-primary);
-  white-space: nowrap;
+  white-space: normal;
   background-color: var(--ep-fill-color);
   border: 1px solid transparent;
   border-radius: 5px;

@@ -1,11 +1,18 @@
 <template>
   <div class="player" ref="playerContainer" v-loading="showLoading">
     <canvas ref="playerCanvas" class="player-canvas" />
+    <el-icon
+      class="player__empty"
+      v-show="playerState.frameCount === 0 || !playerState.existVideo"
+    >
+      <VideoCameraFilled />
+    </el-icon>
     <audio ref="playerAudio" src="" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { VideoCameraFilled } from '@element-plus/icons-vue'
 import { computed, inject, reactive, ref, watch, watchPostEffect } from 'vue'
 import { FFmpegManager } from '~/common/composables/useFFmpeg'
 import { usePlayerState } from '~/stores/playerState'
@@ -26,7 +33,7 @@ const audioInfo = reactive({
   start: -1,
   end: -1
 })
-const audioLoading = ref(true)
+const audioLoading = ref(false)
 function setTime(playingFrame: number) {
   if (!playerAudio.value) return
   const audioTime = Math.max((playingFrame - audioInfo.start) / 30, 0)
@@ -91,6 +98,7 @@ const showLoading = computed(() => {
 
 <style lang="scss" scoped>
 .player {
+  position: relative;
   // background-color: rgb(0, 204, 255);
   display: flex;
   align-items: center;
@@ -99,6 +107,11 @@ const showLoading = computed(() => {
   &-canvas {
     width: 96%;
     height: 96%;
+  }
+
+  &__empty {
+    position: absolute;
+    font-size: 10rem;
   }
 }
 </style>
