@@ -104,11 +104,6 @@ const showLoading = computed(() => {
   align-items: center;
   justify-content: center;
 
-  &-canvas {
-    width: 96%;
-    height: 96%;
-  }
-
   &__empty {
     position: absolute;
     font-size: 10rem;

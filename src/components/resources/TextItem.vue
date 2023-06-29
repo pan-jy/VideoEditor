@@ -35,7 +35,7 @@ onMounted(() => {
   overflow: hidden;
   font-size: 1.5rem;
   color: var(--ep-text-color-primary);
-  white-space: normal;
+  white-space: nowrap;
   background-color: var(--ep-fill-color);
   border: 1px solid transparent;
   border-radius: 5px;
