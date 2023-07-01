@@ -1,7 +1,7 @@
 <template>
   <div
     class="resources"
-    :class="{ 'resources--closed': sideBarState.isClosed }"
+    :class="{ 'resources--closed': sideBarStore.isClosed }"
   >
     <header class="resources-header">
       <span class="resources-header-title">
@@ -11,7 +11,7 @@
         <el-icon :class="{ 'is-loading': isLoading }" @click="$emit('refresh')">
           <Refresh />
         </el-icon>
-        <el-icon @click="sideBarState.setIsClosed()">
+        <el-icon @click="sideBarStore.setIsClosed()">
           <Fold />
         </el-icon>
       </div>
@@ -27,8 +27,8 @@
 <script setup lang="ts">
 import { Fold, Refresh } from '@element-plus/icons-vue'
 import type { ResourcesList } from '~/types/resources'
-import { useSideBarState } from '~/stores/sideBarState'
-const sideBarState = useSideBarState()
+import { useSideBarStore } from '~/stores/sideBarStore'
+const sideBarStore = useSideBarStore()
 
 defineProps<{
   isLoading: boolean

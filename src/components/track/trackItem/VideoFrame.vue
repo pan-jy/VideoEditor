@@ -9,11 +9,11 @@ import { inject, onMounted, onUnmounted, ref, watch } from 'vue'
 import { FFmpegManager } from '~/common/composables/useFFmpeg'
 import { VideoTrackItem } from '~/config/tracks'
 import { useDebounceFn } from '@vueuse/core'
-import { useTrackState } from '~/stores/trackState'
+import { useTrackStore } from '~/stores/trackStore'
 
 const props = defineProps<{ trackItem: VideoTrackItem; loaded: boolean }>()
 
-const trackState = useTrackState()
+const trackStore = useTrackStore()
 
 const ffmpeg = inject('ffmpeg') as FFmpegManager
 
@@ -48,7 +48,7 @@ watch(
 )
 
 watch(
-  () => [props.trackItem, props.loaded, trackState.scale],
+  () => [props.trackItem, props.loaded, trackStore.scale],
   useDebounceFn(
     () => {
       if (!framesContainer.value) return

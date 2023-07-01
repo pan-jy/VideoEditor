@@ -70,15 +70,15 @@
 
 <script setup lang="ts">
 import { reactive, watch } from 'vue'
-import { useAttrState } from '~/stores/attrState'
+import { useAttrStore } from '~/stores/attrStore'
 import { TextAttr } from '~/types/attributes'
 
 const props = defineProps<{ id: number }>()
-const attrState = useAttrState()
+const attrStore = useAttrStore()
 
 const activeNames = reactive(['1', '2'])
 
-const textAttr = attrState.attrMap.get(props.id) as TextAttr
+const textAttr = attrStore.attrMap.get(props.id) as TextAttr
 
 watch(textAttr, (textAttr) => {
   console.log(textAttr)

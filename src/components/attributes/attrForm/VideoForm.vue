@@ -46,13 +46,13 @@
 
 <script setup lang="ts">
 import { reactive } from 'vue'
-import { useAttrState } from '~/stores/attrState'
+import { useAttrStore } from '~/stores/attrStore'
 import { VideoAttr } from '~/types/attributes'
 
 const props = defineProps<{ id: number }>()
-const attrState = useAttrState()
+const attrStore = useAttrStore()
 
 const activeNames = reactive(['1', '2'])
 
-const videoAttr = attrState.attrMap.get(props.id) as VideoAttr
+const videoAttr = attrStore.attrMap.get(props.id) as VideoAttr
 </script>

@@ -2,9 +2,9 @@ import { onMounted, reactive, Ref, ref, watch } from 'vue'
 import { FFmpegManager } from '~/common/composables/useFFmpeg'
 import { useThrottleFn, useDebounceFn } from '@vueuse/core'
 import { ImageTrackItem, TrackItem, VideoTrackItem } from '~/types/tracks'
-import { usePlayerState } from '~/stores/playerState'
+import { usePlayerStore } from '~/stores/playerStore'
 import { CanvasTextBaseline, CanvasTextAlign, CanvasAttr } from '~/types/canvas'
-import { useAttrState } from '~/stores/attrState'
+import { useAttrStore } from '~/stores/attrStore'
 import { AudioAttr, ItemAttr, TextAttr } from '~/types/attributes'
 
 type TextOptions = {
@@ -21,8 +21,8 @@ export class RenderPlayer {
   private preRenderPlayer: HTMLCanvasElement
   private preRenderContext: CanvasRenderingContext2D | null = null
   private ffmpeg: FFmpegManager
-  private playerState
-  private attrState
+  private playerStore
+  private attrStore
   private containerSize
   private canvasAttr = reactive<CanvasAttr>({ width: 0, height: 0 })
   private textOptions: TextOptions = {
@@ -43,8 +43,8 @@ export class RenderPlayer {
     this.preRenderPlayer = document.createElement('canvas')
     this.ffmpeg = ffmpeg
     this.containerSize = containerSize
-    this.playerState = usePlayerState()
-    this.attrState = useAttrState()
+    this.playerStore = usePlayerStore()
+    this.attrStore = useAttrStore()
     onMounted(() => {
       this.initContent()
     })
@@ -75,14 +75,14 @@ export class RenderPlayer {
     // 大小变化时则更新大小
     watch(
       [
-        () => this.playerState.playerWidth,
-        () => this.playerState.playerHeight,
+        () => this.playerStore.playerWidth,
+        () => this.playerStore.playerHeight,
         () => this.containerSize
       ],
       useDebounceFn(() => {
         const size = {
-          videoW: this.playerState.playerWidth,
-          videoH: this.playerState.playerHeight,
+          videoW: this.playerStore.playerWidth,
+          videoH: this.playerStore.playerHeight,
           containerW: this.containerSize.width.value,
           containerH: this.containerSize.height.value
         }
@@ -95,7 +95,7 @@ export class RenderPlayer {
     )
     // 加载状态变化时修改加载状态并绘制帧
     watch(
-      [this.ffmpeg.isLoaded(), () => this.playerState.inLoadingCount],
+      [this.ffmpeg.isLoaded(), () => this.playerStore.inLoadingCount],
       () => this.checkLoading(),
       {
         immediate: true
@@ -104,9 +104,9 @@ export class RenderPlayer {
     // 播放列表及播放器大小变化时绘制帧
     watch(
       [
-        () => this.playerState.playTargetTrackMap,
+        () => this.playerStore.playTargetTrackMap,
         () => this.canvasAttr,
-        this.attrState.attrMap
+        this.attrStore.attrMap
       ],
       useThrottleFn(() => {
         this.drawCanvas()
@@ -115,14 +115,14 @@ export class RenderPlayer {
     )
     // 帧变化时绘制帧
     watch(
-      () => this.playerState.playingFrame,
+      () => this.playerStore.playingFrame,
       () => this.drawCanvas()
     )
   }
 
   private checkLoading() {
     this.loading.value = true
-    if (this.ffmpeg.isLoaded() && this.playerState.inLoadingCount === 0) {
+    if (this.ffmpeg.isLoaded() && this.playerStore.inLoadingCount === 0) {
       this.loading.value = false
       this.drawCanvas()
     }
@@ -176,7 +176,7 @@ export class RenderPlayer {
       return
     const videoList: Array<() => Promise<boolean>> = []
     const otherList: Array<() => Promise<boolean>> = []
-    this.playerState.playTargetTrackMap.forEach(
+    this.playerStore.playTargetTrackMap.forEach(
       (trackItem: TrackItem, id: number) => {
         const type = trackItem.type
         if (type === 'video') {
@@ -184,7 +184,7 @@ export class RenderPlayer {
             this.drawToPreRenderCanvas(
               trackItem,
               id,
-              this.playerState.playingFrame
+              this.playerStore.playingFrame
             )
           )
         } else {
@@ -192,7 +192,7 @@ export class RenderPlayer {
             this.drawToPreRenderCanvas(
               trackItem,
               id,
-              this.playerState.playingFrame
+              this.playerStore.playingFrame
             )
           )
         }
@@ -219,7 +219,7 @@ export class RenderPlayer {
     return new Promise((resolve) => {
       const { drawW, drawH } = this.computedItemShowArea(trackItem)
       const { type, start, end, offsetL, name, format } = trackItem
-      const { x, y, scale } = this.attrState.attrMap.get(id) as Exclude<
+      const { x, y, scale } = this.attrStore.attrMap.get(id) as Exclude<
         ItemAttr,
         AudioAttr
       >
@@ -277,7 +277,7 @@ export class RenderPlayer {
           resolve(true)
         })
       } else if (type === 'text') {
-        const textAttr = this.attrState.attrMap.get(id) as TextAttr
+        const textAttr = this.attrStore.attrMap.get(id) as TextAttr
         const { fontSize, bold, color, content } = textAttr
         if (this.preRenderContext) {
           this.preRenderContext.font = this.getFont(

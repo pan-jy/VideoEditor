@@ -21,11 +21,11 @@ import { Headset } from '@element-plus/icons-vue'
 import type { FFmpegManager } from '~/common/composables/useFFmpeg'
 import { computed, inject, ref, watch } from 'vue'
 import { AudioTrackItem } from '~/types/tracks'
-import { usePlayerState } from '~/stores/playerState'
+import { usePlayerStore } from '~/stores/playerStore'
 
 const props = defineProps<{ trackItem: AudioTrackItem }>()
 const ffmpeg = inject('ffmpeg') as FFmpegManager
-const playerState = usePlayerState()
+const playerStore = usePlayerStore()
 
 const waveStyle = computed(() => {
   const { start, end, offsetL, offsetR, frameCount } = props.trackItem
@@ -40,7 +40,7 @@ const waveStyle = computed(() => {
 
 const waveFileUrl = ref('')
 const loading = ref(true)
-playerState.inLoadingCount++
+playerStore.inLoadingCount++
 async function initAudio() {
   const { name, file, format, frameCount, time } = props.trackItem
   if (time > 0 && ffmpeg.isLoaded()) {
@@ -48,7 +48,7 @@ async function initAudio() {
     await ffmpeg.genWave(name, frameCount, format)
     waveFileUrl.value = ffmpeg.getWavePng(name)
     loading.value = false
-    playerState.inLoadingCount--
+    playerStore.inLoadingCount--
   }
 }
 

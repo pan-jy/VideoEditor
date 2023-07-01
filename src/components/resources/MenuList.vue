@@ -17,8 +17,8 @@
     <div style="flex-grow: 1"></div>
     <!-- 列表收起时底部显示 -->
     <el-menu-item
-      v-show="sideBarState.isClosed"
-      @click="sideBarState.setIsClosed()"
+      v-show="sideBarStore.isClosed"
+      @click="sideBarStore.setIsClosed()"
     >
       <div class="menu-item">
         <el-icon style="cursor: pointer"><Expand /></el-icon>
@@ -31,8 +31,8 @@
 import { Expand } from '@element-plus/icons-vue'
 import { toRaw } from 'vue'
 import type { MenuItem } from '~/types/resources'
-import { useSideBarState } from '~/stores/sideBarState'
-const sideBarState = useSideBarState()
+import { useSideBarStore } from '~/stores/sideBarStore'
+const sideBarStore = useSideBarStore()
 
 const props = defineProps<{
   activeIndex: number
@@ -42,7 +42,7 @@ const emit = defineEmits(['update:activeIndex'])
 let oldIdx = toRaw(props.activeIndex)
 function itemClick(index: number) {
   emit('update:activeIndex', index)
-  sideBarState.setIsClosed(oldIdx === index ? !sideBarState.isClosed : false)
+  sideBarStore.setIsClosed(oldIdx === index ? !sideBarStore.isClosed : false)
   oldIdx = index
 }
 </script>

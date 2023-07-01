@@ -3,7 +3,7 @@
     <canvas ref="playerCanvas" class="player-canvas" />
     <el-icon
       class="player__empty"
-      v-show="playerState.frameCount === 0 || !playerState.existVideo"
+      v-show="playerStore.frameCount === 0 || !playerStore.existVideo"
     >
       <VideoCameraFilled />
     </el-icon>
@@ -15,7 +15,7 @@
 import { VideoCameraFilled } from '@element-plus/icons-vue'
 import { computed, inject, reactive, ref, watch, watchPostEffect } from 'vue'
 import { FFmpegManager } from '~/common/composables/useFFmpeg'
-import { usePlayerState } from '~/stores/playerState'
+import { usePlayerStore } from '~/stores/playerStore'
 import { RenderPlayer } from './renderPlayer'
 import { useElementSize, useDebounceFn } from '@vueuse/core'
 
@@ -23,7 +23,7 @@ const playerContainer = ref<HTMLDivElement>()
 const containerSize = useElementSize(playerContainer)
 
 const playerCanvas = ref<HTMLCanvasElement>()
-const playerState = usePlayerState()
+const playerStore = usePlayerStore()
 const ffmpeg = inject('ffmpeg') as FFmpegManager
 const renderPlayer = new RenderPlayer(playerCanvas, ffmpeg, containerSize)
 
@@ -45,13 +45,13 @@ const getAudio = useDebounceFn(async () => {
   audioLoading.value = true
 
   const { start, end, audioUrl } = await ffmpeg.getAudio(
-    playerState.audioPlayData
+    playerStore.audioPlayData
   )
 
   audioInfo.start = start
   audioInfo.end = end
   playerAudio.value.src = audioUrl
-  setTime(playerState.playingFrame)
+  setTime(playerStore.playingFrame)
   audioLoading.value = false
 }, 500)
 
@@ -59,10 +59,10 @@ function initAudio() {
   if (
     playerAudio.value &&
     ffmpeg.isLoaded() &&
-    playerState.inLoadingCount === 0 &&
+    playerStore.inLoadingCount === 0 &&
     !renderPlayer.loading.value
   ) {
-    if (playerState.audioPlayData.length > 0) {
+    if (playerStore.audioPlayData.length > 0) {
       getAudio()
     } else {
       playerAudio.value.src = ''
@@ -73,7 +73,7 @@ function initAudio() {
 watchPostEffect(initAudio)
 
 watch(
-  () => playerState.isPause,
+  () => playerStore.isPause,
   (isPause) => {
     if (isPause) {
       playerAudio.value?.pause()
@@ -84,7 +84,7 @@ watch(
 )
 
 watch(
-  () => playerState.playingFrame,
+  () => playerStore.playingFrame,
   (playingFrame, oldFrame) => {
     if (playingFrame - oldFrame == 1) return
     setTime(playingFrame)

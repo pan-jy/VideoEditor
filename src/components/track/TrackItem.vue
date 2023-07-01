@@ -36,7 +36,7 @@ import ImageTrack from './trackItem/ImageTrack.vue'
 import TextTrack from './trackItem/TextTrack.vue'
 import VideoTrack from './trackItem/VideoTrack.vue'
 import { TrackItemIdx, TrackItem, TrackType } from '~/types/tracks'
-import { useTrackState } from '~/stores/trackState'
+import { useTrackStore } from '~/stores/trackStore'
 import { computed, ref, watchEffect } from 'vue'
 import {
   frameCountToPixel,
@@ -49,30 +49,30 @@ const props = defineProps<{
   trackItemIdx: TrackItemIdx
 }>()
 
-const trackState = useTrackState()
+const trackStore = useTrackStore()
 
 trackCheckPlaying(props.trackItem)
 
 const left = ref()
 const width = ref()
 watchEffect(() => {
-  left.value = frameCountToPixel(trackState.scale, props.trackItem.start)
+  left.value = frameCountToPixel(trackStore.scale, props.trackItem.start)
   width.value = frameCountToPixel(
-    trackState.scale,
+    trackStore.scale,
     props.trackItem.end - props.trackItem.start
   )
 })
 
 const showHandler = computed(() => {
-  return props.trackItem.id === trackState.focusedItem?.id
+  return props.trackItem.id === trackStore.focusedItem?.id
 })
 
 function mouseDowm(type: 'left' | 'right') {
   function resizeTrackItem(e: MouseEvent) {
-    if (trackState.focusedItem && e.button === 0 && e.buttons === 1) {
-      const scale = trackState.scale
-      const targetList = trackState.trackList[props.trackItemIdx.lineIdx].list
-      const targetItem = trackState.focusedItem
+    if (trackStore.focusedItem && e.button === 0 && e.buttons === 1) {
+      const scale = trackStore.scale
+      const targetList = trackStore.trackList[props.trackItemIdx.lineIdx].list
+      const targetItem = trackStore.focusedItem
       const diff = pixelToFrameCount(scale, e.movementX)
       if (type === 'left') {
         const preItem = targetList[props.trackItemIdx.itemIdx - 1] as
@@ -126,12 +126,12 @@ function mouseDowm(type: 'left' | 'right') {
 }
 
 function itemClick() {
-  trackState.focusedItem = props.trackItem
+  trackStore.focusedItem = props.trackItem
 }
 
 const isDragging = ref(false)
 function dragItem(e: DragEvent) {
-  trackState.focusedItem = undefined
+  trackStore.focusedItem = undefined
   isDragging.value = true
   const { lineIdx, itemIdx } = props.trackItemIdx
   e.dataTransfer?.setData(
@@ -144,7 +144,7 @@ function dragItem(e: DragEvent) {
 }
 function dragEnd() {
   isDragging.value = false
-  trackState.focusedItem = props.trackItem
+  trackStore.focusedItem = props.trackItem
 }
 
 const componentMap: { [K in TrackType]: never } = {

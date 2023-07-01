@@ -17,13 +17,13 @@
 
 <script setup lang="ts">
 import { reactive } from 'vue'
-import { useAttrState } from '~/stores/attrState'
+import { useAttrStore } from '~/stores/attrStore'
 import { AudioAttr } from '~/types/attributes'
 
 const props = defineProps<{ id: number }>()
-const attrState = useAttrState()
+const attrStore = useAttrStore()
 
 const activeNames = reactive(['1'])
 
-const audioAttr = attrState.attrMap.get(props.id) as AudioAttr
+const audioAttr = attrStore.attrMap.get(props.id) as AudioAttr
 </script>

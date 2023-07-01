@@ -24,7 +24,7 @@
 import { nextTick, ref, watch, watchEffect } from 'vue'
 import { TrackLine } from '~/types/tracks'
 import { trackHeight, trackLeftStart as start } from '~/config/tracks'
-import { useTrackState } from '~/stores/trackState'
+import { useTrackStore } from '~/stores/trackStore'
 import { frameCountToPixel } from '~/common/utils/drawTimeLine'
 
 const props = defineProps<{
@@ -32,15 +32,15 @@ const props = defineProps<{
   lineIndex: number
 }>()
 
-const trackState = useTrackState()
+const trackStore = useTrackStore()
 const isActive = ref(false)
 watchEffect(() => {
-  isActive.value = props.lineIndex === trackState.focusedItemIdx?.lineIdx
+  isActive.value = props.lineIndex === trackStore.focusedItemIdx?.lineIdx
 })
 
 const trackLineEl = ref<HTMLDivElement>()
 watch(
-  () => [props.trackLine.list.slice(-1)[0]?.end, trackState.scale],
+  () => [props.trackLine.list.slice(-1)[0]?.end, trackStore.scale],
   ([end, scale]) => {
     nextTick(() => {
       if (!trackLineEl.value) return

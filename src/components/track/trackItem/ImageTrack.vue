@@ -8,19 +8,19 @@
 <script setup lang="ts">
 import { inject, ref, watch } from 'vue'
 import { FFmpegManager } from '~/common/composables/useFFmpeg'
-import { usePlayerState } from '~/stores/playerState'
-import { useTrackState } from '~/stores/trackState'
+import { usePlayerStore } from '~/stores/playerStore'
+import { useTrackStore } from '~/stores/trackStore'
 import { ImageTrackItem } from '~/types/tracks'
 
 const props = defineProps<{
   trackItem: ImageTrackItem
 }>()
 
-const playerState = usePlayerState()
-const trackState = useTrackState()
+const playerStore = usePlayerStore()
+const trackStore = useTrackStore()
 const ffmpeg = inject('ffmpeg') as FFmpegManager
 const loading = ref(true)
-playerState.inLoadingCount++
+playerStore.inLoadingCount++
 async function initImage() {
   const { name, file, format, width, height } = props.trackItem
   if (name && file && ffmpeg.isLoaded()) {
@@ -31,9 +31,9 @@ async function initImage() {
         w: width,
         h: height
       })
-      const trackItemIdx = trackState.getItemIdx(props.trackItem)
+      const trackItemIdx = trackStore.getItemIdx(props.trackItem)
       if (trackItemIdx) {
-        const trackItem = trackState.getTrackItem(
+        const trackItem = trackStore.getTrackItem(
           trackItemIdx
         ) as ImageTrackItem
         trackItem.sourceFrame = frameCount
@@ -41,7 +41,7 @@ async function initImage() {
     }
   }
   loading.value = false
-  playerState.inLoadingCount--
+  playerStore.inLoadingCount--
 }
 
 watch([() => props.trackItem.name, ffmpeg.isLoaded()], initImage, {

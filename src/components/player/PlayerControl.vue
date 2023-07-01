@@ -5,9 +5,9 @@
       / {{ allTime }}
     </span>
     <el-button
-      @click="playControl(playerState.isPause)"
+      @click="playControl(playerStore.isPause)"
       class="control-btn"
-      :icon="playerState.isPause ? VideoPlay : VideoPause"
+      :icon="playerStore.isPause ? VideoPlay : VideoPause"
     />
   </div>
 </template>
@@ -16,16 +16,16 @@
 import { VideoPause, VideoPlay } from '@element-plus/icons-vue'
 import { computed } from 'vue'
 import { formatPlayerTime } from '~/common/utils/timeFormat'
-import { usePlayerState } from '~/stores/playerState'
+import { usePlayerStore } from '~/stores/playerStore'
 
-const playerState = usePlayerState()
+const playerStore = usePlayerStore()
 const playTime = computed(() => {
-  return formatPlayerTime(playerState.playingFrame)
+  return formatPlayerTime(playerStore.playingFrame)
 })
 
 const allTime = computed(() => {
   return formatPlayerTime(
-    playerState.frameCount < 0 ? 0 : playerState.frameCount
+    playerStore.frameCount < 0 ? 0 : playerStore.frameCount
   )
 })
 
@@ -33,24 +33,24 @@ let playTimer: unknown
 const timerStep = 1000 / 30
 
 const pauseVideo = () => {
-  playerState.isPause = true
+  playerStore.isPause = true
   clearInterval(playTimer as number)
 }
 
 const startVideo = () => {
-  if (playerState.playingFrame >= playerState.frameCount)
-    playerState.playingFrame = 0
-  playerState.isPause = false
+  if (playerStore.playingFrame >= playerStore.frameCount)
+    playerStore.playingFrame = 0
+  playerStore.isPause = false
   playTimer = setInterval(() => {
-    playerState.playingFrame++
-    if (playerState.playingFrame === playerState.frameCount) {
+    playerStore.playingFrame++
+    if (playerStore.playingFrame === playerStore.frameCount) {
       pauseVideo()
     }
   }, timerStep)
 }
 
 function playControl(isPause: boolean) {
-  if (playerState.frameCount <= 0) return
+  if (playerStore.frameCount <= 0) return
   if (isPause) {
     startVideo()
   } else {

@@ -14,7 +14,7 @@
         :max="10"
         :min="1"
         show-input
-        v-model="trackState.scale"
+        v-model="trackStore.scale"
         size="small"
         :format-tooltip="(v: number) => `帧数 X ${v}`"
       />
@@ -24,16 +24,16 @@
 
 <script setup lang="ts">
 import { trackHeaderMenu } from '~/config/baseMenu'
-import { useTrackState } from '~/stores/trackState'
+import { useTrackStore } from '~/stores/trackStore'
 
-const trackState = useTrackState()
+const trackStore = useTrackStore()
 
 function operation(type: string) {
   if (type === '删除') {
-    const focusedItemIdx = trackState.focusedItemIdx
+    const focusedItemIdx = trackStore.focusedItemIdx
     if (focusedItemIdx === undefined) return
-    trackState.focusedItem = undefined
-    trackState.removeTrackItem(
+    trackStore.focusedItem = undefined
+    trackStore.removeTrackItem(
       focusedItemIdx.lineIdx,
       focusedItemIdx.itemIdx,
       true

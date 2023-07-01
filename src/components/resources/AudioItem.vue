@@ -3,8 +3,9 @@
     <el-image class="audio-item-cover" :src="audioItem.cover" lazy />
     <el-icon size="40" class="play-icon"><VideoPlay /></el-icon>
     <main class="audio-item-info">
-      <span>{{ audioItem.name }}</span>
-      <span>{{ formatTime(audioItem.time).str }}</span>
+      <span class="info-name">{{ audioItem.name }}</span>
+      <span class="info-singer">{{ audioItem.singer }}</span>
+      <span class="info-time">{{ formatTime(audioItem.time).str }}</span>
     </main>
   </div>
 </template>
@@ -44,7 +45,9 @@ defineProps<{ audioItem: AudioItem }>()
     align-items: flex-start;
     justify-content: space-between;
     height: 100%;
-    padding: 7px 15px;
+    padding: 3px 0;
+    margin: 0px 15px;
+    overflow: hidden;
     font-size: 15px;
   }
   .play-icon {
@@ -63,6 +66,22 @@ defineProps<{ audioItem: AudioItem }>()
   }
   &:hover .play-icon {
     display: block;
+  }
+}
+
+.info {
+  &-name,
+  &-singer {
+    white-space: nowrap;
+  }
+
+  &-singer {
+    font-size: 14px;
+    color: var(--ep-text-color-placeholder);
+  }
+
+  &-time {
+    font-size: 13px;
   }
 }
 </style>

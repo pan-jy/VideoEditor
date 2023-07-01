@@ -1,16 +1,16 @@
 import { onBeforeUnmount, watchEffect } from 'vue'
-import { usePlayerState } from '~/stores/playerState'
+import { usePlayerStore } from '~/stores/playerStore'
 import { TrackItem } from '~/types/tracks'
 
 export function trackCheckPlaying(trackItem: TrackItem) {
-  const playerState = usePlayerState()
+  const playerStore = usePlayerStore()
   watchEffect(() => {
     if (
-      playerState.playingFrame >= trackItem.start &&
-      playerState.playingFrame <= trackItem.end
+      playerStore.playingFrame >= trackItem.start &&
+      playerStore.playingFrame <= trackItem.end
     ) {
-      !playerState.playTargetTrackMap.has(trackItem.id) &&
-        playerState.playTargetTrackMap.set(trackItem.id, trackItem)
+      !playerStore.playTargetTrackMap.has(trackItem.id) &&
+        playerStore.playTargetTrackMap.set(trackItem.id, trackItem)
     } else {
       delItem(trackItem.id)
     }
@@ -20,7 +20,7 @@ export function trackCheckPlaying(trackItem: TrackItem) {
   })
 
   function delItem(id: number) {
-    playerState.playTargetTrackMap.has(id) &&
-      playerState.playTargetTrackMap.delete(id)
+    playerStore.playTargetTrackMap.has(id) &&
+      playerStore.playTargetTrackMap.delete(id)
   }
 }

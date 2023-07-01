@@ -23,6 +23,7 @@ interface VideoItem extends BaseResourcesItem {
 
 interface AudioItem extends BaseResourcesItem {
   cover: string
+  singer: string
   time: number
 }
 

@@ -19,8 +19,8 @@ import type {
   CanvasTextBaseline
 } from '~/types/canvas'
 import { isDark } from '~/common/composables/useDark'
-import { useSideBarState } from '~/stores/sideBarState'
-import { usePlayerState } from '~/stores/playerState'
+import { useSideBarStore } from '~/stores/sideBarStore'
+import { usePlayerStore } from '~/stores/playerStore'
 
 const props = withDefaults(
   defineProps<{
@@ -40,13 +40,13 @@ const props = withDefaults(
   }
 )
 
-const playerState = usePlayerState()
+const playerStore = usePlayerStore()
 const getTiming = (e: MouseEvent) => {
   const timing = pixelToFrameCount(
     props.scale,
     Math.max(0, e.offsetX + props.start)
   )
-  playerState.playingFrame = timing
+  playerStore.playingFrame = timing
 }
 
 const canvasContainer = ref<HTMLDivElement>()
@@ -111,9 +111,9 @@ onMounted(() => {
 })
 watch(props, updateTimeLine)
 watch(canvasConfigs, updateTimeLine)
-const sideBarState = useSideBarState()
+const sideBarStore = useSideBarStore()
 watch(
-  () => sideBarState.isClosed,
+  () => sideBarStore.isClosed,
   () => {
     setTimeout(() => {
       setCanvasRect()

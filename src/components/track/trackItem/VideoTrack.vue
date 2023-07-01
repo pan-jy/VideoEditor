@@ -18,12 +18,12 @@ import type { FFmpegManager } from '~/common/composables/useFFmpeg'
 import { computed, inject, ref, watch } from 'vue'
 import { VideoTrackItem } from '~/types/tracks'
 import { formatTime } from '~/common/utils/timeFormat'
-import { usePlayerState } from '~/stores/playerState'
+import { usePlayerStore } from '~/stores/playerStore'
 
 const props = defineProps<{ trackItem: VideoTrackItem }>()
 
 const ffmpeg = inject('ffmpeg') as FFmpegManager
-const playerState = usePlayerState()
+const playerStore = usePlayerStore()
 
 const waveStyle = computed(() => {
   const { start, end, offsetL, offsetR, frameCount } = props.trackItem
@@ -38,7 +38,7 @@ const waveStyle = computed(() => {
 
 const waveFileUrl = ref('')
 const loading = ref(true)
-playerState.inLoadingCount++
+playerStore.inLoadingCount++
 async function initVideo() {
   const { name, file, format, frameCount, time, width, height } =
     props.trackItem
@@ -52,7 +52,7 @@ async function initVideo() {
     await ffmpeg.genWave(name, frameCount)
     waveFileUrl.value = ffmpeg.getWavePng(name)
     loading.value = false
-    playerState.inLoadingCount--
+    playerStore.inLoadingCount--
   }
 }
 

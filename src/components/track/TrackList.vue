@@ -8,14 +8,14 @@
       @wheel="zoomScale"
       @scroll="onScroll"
       @dragleave="isDragging = false"
-      @click="trackState.focusedItem = undefined"
+      @click="trackStore.focusedItem = undefined"
     >
       <TimeLine
-        :scale="trackState.scale"
+        :scale="trackStore.scale"
         :start="scrollVal.scrollLeft - trackLeftStart"
         :focusPosition="{
-          start: trackState.focusedItem?.start,
-          end: trackState.focusedItem?.end
+          start: trackStore.focusedItem?.start,
+          end: trackStore.focusedItem?.end
         }"
       />
       <div
@@ -23,7 +23,7 @@
         class="timing-line"
         :style="{
           left: `${
-            frameCountToPixel(trackState.scale, playerState.playingFrame) +
+            frameCountToPixel(trackStore.scale, playerStore.playingFrame) +
             trackLeftStart
           }px`,
           top: `${scrollVal.scrollTop}px`
@@ -62,7 +62,7 @@
 import { Files } from '@element-plus/icons-vue'
 import { reactive, ref } from 'vue'
 import { getFile } from '~/common/utils/fetchFile'
-import { useTrackState } from '~/stores/trackState'
+import { useTrackStore } from '~/stores/trackStore'
 import {
   isContains,
   getOffsetX,
@@ -79,20 +79,20 @@ import {
 } from '~/config/tracks'
 import { TrackItem, TrackItemIdx } from '~/types/tracks'
 import { frameCountToPixel } from '~/common/utils/drawTimeLine'
-import { usePlayerState } from '~/stores/playerState'
-import { useAttrState } from '~/stores/attrState'
+import { usePlayerStore } from '~/stores/playerStore'
+import { useAttrStore } from '~/stores/attrStore'
 import { AudioAttr, ImageAttr, TextAttr, VideoAttr } from '~/types/attributes'
 
-const trackState = useTrackState()
-const playerState = usePlayerState()
-const attrState = useAttrState()
-const trackList = trackState.trackList
+const trackStore = useTrackStore()
+const playerStore = usePlayerStore()
+const attrStore = useAttrStore()
+const trackList = trackStore.trackList
 // 处理缩放事件
 function zoomScale(e: WheelEvent) {
   if (e.ctrlKey || e.metaKey) {
     e.preventDefault()
     if (e.deltaY === 0) return
-    e.deltaY > 0 ? trackState.scale-- : trackState.scale++
+    e.deltaY > 0 ? trackStore.scale-- : trackStore.scale++
   }
 }
 // 处理滚动事件
@@ -166,21 +166,21 @@ async function getTrackItem(file: File, e: DragEvent) {
   const type = getResourcesType(file)
   let trackItem: TrackItem
   if (type === 'image') {
-    trackItem = new ImageTrackItem(file, e, trackState.scale)
+    trackItem = new ImageTrackItem(file, e, trackStore.scale)
     const imageAttr = new ImageAttr()
-    attrState.attrMap.set(trackItem.id, imageAttr)
+    attrStore.attrMap.set(trackItem.id, imageAttr)
   } else if (type === 'text') {
-    trackItem = new TextTrackItem(file, e, trackState.scale)
+    trackItem = new TextTrackItem(file, e, trackStore.scale)
     const textAttr = new TextAttr()
-    attrState.attrMap.set(trackItem.id, textAttr)
+    attrStore.attrMap.set(trackItem.id, textAttr)
   } else if (type === 'video') {
-    trackItem = new VideoTrackItem(file, e, trackState.scale)
+    trackItem = new VideoTrackItem(file, e, trackStore.scale)
     const videoAttr = new VideoAttr()
-    attrState.attrMap.set(trackItem.id, videoAttr)
+    attrStore.attrMap.set(trackItem.id, videoAttr)
   } else if (type === 'audio') {
-    trackItem = new AudioTrackItem(file, e, trackState.scale)
+    trackItem = new AudioTrackItem(file, e, trackStore.scale)
     const audioAttr = new AudioAttr()
-    attrState.attrMap.set(trackItem.id, audioAttr)
+    attrStore.attrMap.set(trackItem.id, audioAttr)
   } else return null
   if (trackItem) {
     await trackItem.init()
@@ -195,9 +195,9 @@ async function onDrop(e: DragEvent) {
   if (trackItemIdx) {
     const { lineIdx, itemIdx } = JSON.parse(trackItemIdx) as TrackItemIdx
     const trackItem = trackList[lineIdx].list[itemIdx]
-    trackItem.setStart(e, trackState.scale)
-    trackState.removeTrackItem(lineIdx, itemIdx)
-    trackState.insertToTrackList(lineIndex.value, trackItem.type, trackItem)
+    trackItem.setStart(e, trackStore.scale)
+    trackStore.removeTrackItem(lineIdx, itemIdx)
+    trackStore.insertToTrackList(lineIndex.value, trackItem.type, trackItem)
     e.dataTransfer?.clearData()
   } else {
     const files = await getDraggedFiles(e)
@@ -205,8 +205,8 @@ async function onDrop(e: DragEvent) {
       const trackItem = await getTrackItem(file, e)
       if (trackItem === null) return
       const type = trackItem.type
-      if (trackState.initTrackList(type, trackItem)) return
-      trackState.insertToTrackList(lineIndex.value, type, trackItem)
+      if (trackStore.initTrackList(type, trackItem)) return
+      trackStore.insertToTrackList(lineIndex.value, type, trackItem)
     })
   }
   lineIndex.value = undefined

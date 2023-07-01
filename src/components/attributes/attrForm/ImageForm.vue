@@ -36,13 +36,13 @@
 
 <script setup lang="ts">
 import { reactive } from 'vue'
-import { useAttrState } from '~/stores/attrState'
+import { useAttrStore } from '~/stores/attrStore'
 import { ImageAttr } from '~/types/attributes'
 
 const props = defineProps<{ id: number }>()
-const attrState = useAttrState()
+const attrStore = useAttrStore()
 
 const activeNames = reactive(['1'])
 
-const imageAttr = attrState.attrMap.get(props.id) as ImageAttr
+const imageAttr = attrStore.attrMap.get(props.id) as ImageAttr
 </script>
