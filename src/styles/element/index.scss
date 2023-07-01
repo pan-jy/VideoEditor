@@ -23,7 +23,11 @@ $--colors: (
   $namespace: 'ep'
 );
 @forward 'element-plus/theme-chalk/src/common/var.scss' with (
-  $colors: $--colors
+  $colors: $--colors,
+  $collapse: (
+    'header-bg-color': var(--ep-fill-color-dark),
+    'header-height': 40px
+  )
 );
 
 @use './dark.scss';

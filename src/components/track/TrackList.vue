@@ -80,9 +80,12 @@ import {
 import { TrackItem, TrackItemIdx } from '~/types/tracks'
 import { frameCountToPixel } from '~/common/utils/drawTimeLine'
 import { usePlayerState } from '~/stores/playerState'
+import { useAttrState } from '~/stores/attrState'
+import { AudioAttr, ImageAttr, TextAttr, VideoAttr } from '~/types/attributes'
 
 const trackState = useTrackState()
 const playerState = usePlayerState()
+const attrState = useAttrState()
 const trackList = trackState.trackList
 // 处理缩放事件
 function zoomScale(e: WheelEvent) {
@@ -161,15 +164,24 @@ async function getDraggedFiles(e: DragEvent) {
  */
 async function getTrackItem(file: File, e: DragEvent) {
   const type = getResourcesType(file)
-  let trackItem: TrackItem | null = null
-  if (type === 'image')
+  let trackItem: TrackItem
+  if (type === 'image') {
     trackItem = new ImageTrackItem(file, e, trackState.scale)
-  else if (type === 'text')
+    const imageAttr = new ImageAttr()
+    attrState.attrMap.set(trackItem.id, imageAttr)
+  } else if (type === 'text') {
     trackItem = new TextTrackItem(file, e, trackState.scale)
-  else if (type === 'video')
+    const textAttr = new TextAttr()
+    attrState.attrMap.set(trackItem.id, textAttr)
+  } else if (type === 'video') {
     trackItem = new VideoTrackItem(file, e, trackState.scale)
-  else if (type === 'audio')
+    const videoAttr = new VideoAttr()
+    attrState.attrMap.set(trackItem.id, videoAttr)
+  } else if (type === 'audio') {
     trackItem = new AudioTrackItem(file, e, trackState.scale)
+    const audioAttr = new AudioAttr()
+    attrState.attrMap.set(trackItem.id, audioAttr)
+  } else return null
   if (trackItem) {
     await trackItem.init()
   }

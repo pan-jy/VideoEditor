@@ -18,7 +18,7 @@
 @import '~/styles/mixins.scss';
 
 .player {
-  $video-min-width: 540px;
+  $video-min-width: 360px;
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -28,6 +28,7 @@
 
   &-header {
     @include header;
+    flex-shrink: 0;
 
     overflow: hidden;
   }
@@ -40,6 +41,7 @@
   }
 
   &-footer {
+    flex-shrink: 0;
     height: 40px;
     border-top: solid 1px var(--ep-border-color);
   }

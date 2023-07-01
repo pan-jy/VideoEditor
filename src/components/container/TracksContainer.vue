@@ -10,7 +10,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 300px;
+  // height: 300px;
   min-height: 200px;
 }
 </style>

@@ -4,6 +4,8 @@ import { useThrottleFn, useDebounceFn } from '@vueuse/core'
 import { ImageTrackItem, TrackItem, VideoTrackItem } from '~/types/tracks'
 import { usePlayerState } from '~/stores/playerState'
 import { CanvasTextBaseline, CanvasTextAlign, CanvasAttr } from '~/types/canvas'
+import { useAttrState } from '~/stores/attrState'
+import { AudioAttr, ItemAttr, TextAttr } from '~/types/attributes'
 
 type TextOptions = {
   textBaseLine: CanvasTextBaseline
@@ -20,6 +22,7 @@ export class RenderPlayer {
   private preRenderContext: CanvasRenderingContext2D | null = null
   private ffmpeg: FFmpegManager
   private playerState
+  private attrState
   private containerSize
   private canvasAttr = reactive<CanvasAttr>({ width: 0, height: 0 })
   private textOptions: TextOptions = {
@@ -41,6 +44,7 @@ export class RenderPlayer {
     this.ffmpeg = ffmpeg
     this.containerSize = containerSize
     this.playerState = usePlayerState()
+    this.attrState = useAttrState()
     onMounted(() => {
       this.initContent()
     })
@@ -99,7 +103,11 @@ export class RenderPlayer {
     )
     // 播放列表及播放器大小变化时绘制帧
     watch(
-      [() => this.playerState.playTargetTrackMap, () => this.canvasAttr],
+      [
+        () => this.playerState.playTargetTrackMap,
+        () => this.canvasAttr,
+        this.attrState.attrMap
+      ],
       useThrottleFn(() => {
         this.drawCanvas()
       }, 30),
@@ -168,18 +176,28 @@ export class RenderPlayer {
       return
     const videoList: Array<() => Promise<boolean>> = []
     const otherList: Array<() => Promise<boolean>> = []
-    this.playerState.playTargetTrackMap.forEach((trackItem: TrackItem) => {
-      const type = trackItem.type
-      if (type === 'video') {
-        videoList.unshift(() =>
-          this.drawToPreRenderCanvas(trackItem, this.playerState.playingFrame)
-        )
-      } else {
-        otherList.unshift(() =>
-          this.drawToPreRenderCanvas(trackItem, this.playerState.playingFrame)
-        )
+    this.playerState.playTargetTrackMap.forEach(
+      (trackItem: TrackItem, id: number) => {
+        const type = trackItem.type
+        if (type === 'video') {
+          videoList.unshift(() =>
+            this.drawToPreRenderCanvas(
+              trackItem,
+              id,
+              this.playerState.playingFrame
+            )
+          )
+        } else {
+          otherList.unshift(() =>
+            this.drawToPreRenderCanvas(
+              trackItem,
+              id,
+              this.playerState.playingFrame
+            )
+          )
+        }
       }
-    })
+    )
     this.clearCanvas()
     // 按顺序绘制，先绘制视频，保证视频在底部
     await videoList.reduce(
@@ -195,11 +213,16 @@ export class RenderPlayer {
 
   private drawToPreRenderCanvas(
     trackItem: TrackItem,
+    id: number,
     frameIndex: number
   ): Promise<boolean> {
     return new Promise((resolve) => {
-      const { left, top, drawW, drawH } = this.computedItemShowArea(trackItem)
+      const { drawW, drawH } = this.computedItemShowArea(trackItem)
       const { type, start, end, offsetL, name, format } = trackItem
+      const { x, y, scale } = this.attrState.attrMap.get(id) as Exclude<
+        ItemAttr,
+        AudioAttr
+      >
       if (frameIndex > end) {
         resolve(true)
       } else if (type === 'video') {
@@ -214,10 +237,10 @@ export class RenderPlayer {
             0,
             width,
             height,
-            left,
-            top,
-            drawW,
-            drawH
+            x,
+            y,
+            drawW * (scale / 100),
+            drawH * (scale / 100)
           )
           resolve(true)
         })
@@ -246,21 +269,24 @@ export class RenderPlayer {
             0,
             width,
             height,
-            left,
-            top,
-            drawW,
-            drawH
+            x,
+            y,
+            drawW * (scale / 100),
+            drawH * (scale / 100)
           )
           resolve(true)
         })
       } else if (type === 'text') {
-        const fontSize = 50
-        const color = 'green'
+        const textAttr = this.attrState.attrMap.get(id) as TextAttr
+        const { fontSize, bold, color, content } = textAttr
         if (this.preRenderContext) {
-          this.preRenderContext.font = this.getFont(fontSize, false, name)
-          console.log(this.preRenderContext.font)
+          this.preRenderContext.font = this.getFont(
+            fontSize * (scale / 100),
+            bold,
+            name
+          )
           this.preRenderContext.fillStyle = color
-          this.preRenderContext.fillText('默认文本', 0, 0 + fontSize)
+          this.preRenderContext.fillText(content, x, y + fontSize)
         }
         resolve(true)
       } else {
@@ -305,12 +331,8 @@ export class RenderPlayer {
         }
       }
     }
-    const left = Math.floor((canvasW - drawW) / 2)
-    const top = Math.floor((canvasH - drawH) / 2)
 
     return {
-      left,
-      top,
       drawW,
       drawH
     }

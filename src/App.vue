@@ -56,6 +56,7 @@ onUnmounted(() => {
       &-top {
         display: flex;
         flex: 1;
+        overflow: hidden;
       }
     }
   }
@@ -92,5 +93,30 @@ onUnmounted(() => {
   &-disabled {
     cursor: not-allowed;
   }
+}
+
+.ep-collapse {
+  border: none;
+
+  &-item__wrap {
+    border: none;
+  }
+
+  &-item__header {
+    padding-left: 10px;
+    border-radius: 8px;
+  }
+
+  &-item__content {
+    padding: 10px 10px;
+  }
+}
+
+.ep-slider__input {
+  width: 80px;
+}
+
+.ep-slider__runway.show-input {
+  margin-right: 10px;
 }
 </style>

@@ -8,8 +8,11 @@ import type {
   TrackItemIdx
 } from '~/types/tracks'
 import { trackOrder } from '~/config/tracks'
+import { useAttrState } from './attrState'
 
 export const useTrackState = defineStore('trackState', () => {
+  const attrState = useAttrState()
+
   const scale = ref(5)
   const trackList = ref<TrackList>([])
   const focusedItem = ref<TrackItem | undefined>()
@@ -122,6 +125,7 @@ export const useTrackState = defineStore('trackState', () => {
     const trackItem = trackLine.list[itemIndex]
     if (deleteF) {
       URL.revokeObjectURL(trackItem.source)
+      attrState.attrMap.delete(trackItem.id)
     }
     trackLine.list.splice(itemIndex, 1)
     if (trackLine.list.length === 0 && !trackLine.isMian)
