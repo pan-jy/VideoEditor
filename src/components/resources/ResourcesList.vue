@@ -17,7 +17,10 @@
       </div>
     </header>
     <main class="resources-main">
-      <div v-for="subList in resourcesList" :key="subList.title">
+      <div
+        v-for="subList in resourcesList"
+        :key="`${subList.type}-${subList.title}`"
+      >
         <ResourcesSubList :resourcesSubList="subList" />
       </div>
     </main>

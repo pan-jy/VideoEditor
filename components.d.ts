@@ -35,6 +35,7 @@ declare module '@vue/runtime-core' {
     HeaderContainer: typeof import('./src/components/container/HeaderContainer.vue')['default']
     IconList: typeof import('./src/components/track/IconList.vue')['default']
     ImageForm: typeof import('./src/components/attributes/attrForm/ImageForm.vue')['default']
+    ImageItem: typeof import('./src/components/resources/ImageItem.vue')['default']
     ImageTrack: typeof import('./src/components/track/trackItem/ImageTrack.vue')['default']
     MenuList: typeof import('./src/components/resources/MenuList.vue')['default']
     Player: typeof import('./src/components/player/Player.vue')['default']
@@ -45,6 +46,7 @@ declare module '@vue/runtime-core' {
     ResourcesSubList: typeof import('./src/components/resources/ResourcesSubList.vue')['default']
     TextForm: typeof import('./src/components/attributes/attrForm/TextForm.vue')['default']
     TextItem: typeof import('./src/components/resources/TextItem.vue')['default']
+    TextLine: typeof import('./src/components/resources/TextLine.vue')['default']
     TextTrack: typeof import('./src/components/track/trackItem/TextTrack.vue')['default']
     TimeLine: typeof import('./src/components/track/TimeLine.vue')['default']
     TrackHeader: typeof import('./src/components/track/TrackHeader.vue')['default']
@@ -55,6 +57,7 @@ declare module '@vue/runtime-core' {
     TracksContainer: typeof import('./src/components/container/TracksContainer.vue')['default']
     VideoForm: typeof import('./src/components/attributes/attrForm/VideoForm.vue')['default']
     VideoFrame: typeof import('./src/components/track/trackItem/VideoFrame.vue')['default']
+    VideoItem: typeof import('./src/components/resources/VideoItem.vue')['default']
     VideoTrack: typeof import('./src/components/track/trackItem/VideoTrack.vue')['default']
   }
   export interface ComponentCustomProperties {
