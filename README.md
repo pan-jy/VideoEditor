@@ -1,18 +1,37 @@
-# Vue 3 + TypeScript + Vite
+# VideoEdit
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## 介绍
+基于 ffmpeg 的使用 vue3 + ts 开发的纯前端视频剪辑器（仿剪映）
+部分参考：https://github.com/Cc-Edit/CcClip
 
-## Recommended IDE Setup
+## 特性
+1. 完整的eslint、stylelint配置，严格的ts类型限制
+2. vue3 + ts + vite + vueuse + pinia
+3. ffmpeg、wasm 底层音视频处理集成
+4. WebWorker + OffscreenCanvas 异步进行帧计算、绘制
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## 功能
+1. 支持深色模式（使用element-plus）
+2. 支持云素材（暂为mock模拟）以及本地上传素材
+3. 支持拖拽添加资源（拖拽放置时显示提示线）
+4. 支持表单调整资源位置、属性
+5. 支持音视频裁剪，以及添加贴图、文字
+6. 支持时间轴缩放（ctrl+滚轮），最多显示30帧
+7. 支持播放预览
 
-## Type Support For `.vue` Imports in TS
+## 下一步
+1. 添加导出功能
+2. 添加拖拽调节资源大小、位置功能
+3. 添加持久化存储功能
+4. 添加操作撤销、重做功能
+5. **改善性能**！
+6. ...
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+## 预览
+![image](https://github.com/pan-jy/VideoEditor/assets/81850790/aea240da-647b-42ba-aaf0-3b1f6b58d672)
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+![image](https://github.com/pan-jy/VideoEditor/assets/81850790/03379ad5-d599-496d-ad1d-0d69c517275e)
 
-1. Disable the built-in TypeScript Extension
-   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+![image](https://github.com/pan-jy/VideoEditor/assets/81850790/6f95f1c1-f1fd-4984-b22c-eaff9bd3c5a8)
+
+
