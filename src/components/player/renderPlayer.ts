@@ -1,7 +1,12 @@
 import { onMounted, reactive, Ref, ref, watch } from 'vue'
 import { FFmpegManager } from '~/common/composables/useFFmpeg'
 import { useThrottleFn, useDebounceFn } from '@vueuse/core'
-import { ImageTrackItem, TrackItem, VideoTrackItem } from '~/types/tracks'
+import {
+  ImageTrackItem,
+  TextTrackItem,
+  TrackItem,
+  VideoTrackItem
+} from '~/types/tracks'
 import { usePlayerStore } from '~/stores/playerStore'
 import { CanvasTextBaseline, CanvasTextAlign, CanvasAttr } from '~/types/canvas'
 import { useAttrStore } from '~/stores/attrStore'
@@ -279,6 +284,7 @@ export class RenderPlayer {
       } else if (type === 'text') {
         const textAttr = this.attrStore.attrMap.get(id) as TextAttr
         const { fontSize, bold, color, content } = textAttr
+        ;(trackItem as TextTrackItem).content = content
         if (this.preRenderContext) {
           this.preRenderContext.font = this.getFont(
             fontSize * (scale / 100),

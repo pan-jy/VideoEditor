@@ -55,7 +55,7 @@ export const useTrackStore = defineStore('trackStore', () => {
    */
   function getInsertable(trackLine: TrackLine, trackItem: TrackItem) {
     for (let i = trackLine.list.length - 1; i >= 0; i--) {
-      if (trackLine.list[i].end < trackItem.start) break
+      if (trackLine.list[i].end <= trackItem.start) break
       if (trackLine.list[i].start < trackItem.end) return false
     }
     return true
