@@ -2,7 +2,6 @@
 
 ## 介绍
 基于 ffmpeg 的使用 vue3 + ts 开发的纯前端视频剪辑器（仿剪映）
-部分参考：https://github.com/Cc-Edit/CcClip
 
 ## 特性
 1. 完整的eslint、stylelint配置，严格的ts类型限制
