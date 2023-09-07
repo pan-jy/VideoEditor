@@ -15,7 +15,7 @@ import { AudioAttr, ItemAttr, TextAttr } from '~/types/attributes'
 type TextOptions = {
   textBaseLine: CanvasTextBaseline
   textAlign: CanvasTextAlign
-  bgColor: string
+  // bgColor: string
 }
 
 export class RenderPlayer {
@@ -32,8 +32,7 @@ export class RenderPlayer {
   private canvasAttr = reactive<CanvasAttr>({ width: 0, height: 0 })
   private textOptions: TextOptions = {
     textBaseLine: 'middle',
-    textAlign: 'center',
-    bgColor: '#111827'
+    textAlign: 'center'
   }
 
   constructor(
@@ -163,7 +162,7 @@ export class RenderPlayer {
 
   private clearCanvas() {
     if (this.preRenderContext === null) return
-    this.preRenderContext.fillStyle = this.textOptions.bgColor
+    this.preRenderContext.fillStyle = 'transparent'
     this.preRenderContext.fillRect(
       0,
       0,
