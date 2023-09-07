@@ -15,7 +15,6 @@ import { AudioAttr, ItemAttr, TextAttr } from '~/types/attributes'
 type TextOptions = {
   textBaseLine: CanvasTextBaseline
   textAlign: CanvasTextAlign
-  bgColor: string
 }
 
 export class RenderPlayer {
@@ -32,8 +31,7 @@ export class RenderPlayer {
   private canvasAttr = reactive<CanvasAttr>({ width: 0, height: 0 })
   private textOptions: TextOptions = {
     textBaseLine: 'middle',
-    textAlign: 'center',
-    bgColor: '#111827'
+    textAlign: 'center'
   }
 
   constructor(
@@ -109,8 +107,8 @@ export class RenderPlayer {
     // 播放列表及播放器大小变化时绘制帧
     watch(
       [
-        () => this.playerStore.playTargetTrackMap,
-        () => this.canvasAttr,
+        this.playerStore.playTargetTrackMap,
+        this.canvasAttr,
         this.attrStore.attrMap
       ],
       useThrottleFn(() => {
@@ -163,8 +161,14 @@ export class RenderPlayer {
 
   private clearCanvas() {
     if (this.preRenderContext === null) return
-    this.preRenderContext.fillStyle = this.textOptions.bgColor
-    this.preRenderContext.fillRect(
+    this.preRenderContext.clearRect(
+      0,
+      0,
+      this.canvasAttr.width,
+      this.canvasAttr.height
+    )
+    if (this.playerContext === null) return
+    this.playerContext.clearRect(
       0,
       0,
       this.canvasAttr.width,

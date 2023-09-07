@@ -20,8 +20,8 @@ const playerStore = usePlayerStore()
 const trackStore = useTrackStore()
 const ffmpeg = inject('ffmpeg') as FFmpegManager
 const loading = ref(true)
-playerStore.inLoadingCount++
 async function initImage() {
+  playerStore.inLoadingCount++
   const { name, file, format, width, height } = props.trackItem
   if (name && file && ffmpeg.isLoaded()) {
     const imageName = `${name}.${format}`

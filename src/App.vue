@@ -24,6 +24,17 @@ import { useWindowSize } from '@vueuse/core'
 import { DefineComponent, inject, onMounted, onUnmounted, ref } from 'vue'
 import { useResize } from '~/common/composables/useResizeElement'
 import { FFmpegManager } from '~/common/composables/useFFmpeg'
+import { useHistoryStore } from './stores/historyStore'
+
+const historyStore = useHistoryStore()
+
+window.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'z') {
+    historyStore.undo()
+  } else if (e.ctrlKey && e.key === 'y') {
+    historyStore.redo()
+  }
+})
 
 const { width } = useWindowSize()
 const dividerHorizontal = ref<DefineComponent | null>(null)

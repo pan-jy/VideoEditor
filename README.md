@@ -1,8 +1,7 @@
 # VideoEdit
 
 ## 介绍
-基于 ffmpeg 的使用 vue3 + ts 开发的纯前端视频剪辑器（仿剪映）
-部分参考：https://github.com/Cc-Edit/CcClip
+基于 ffmpeg 的使用 vue3 + ts 开发的纯前端视频剪辑器
 
 ## 特性
 1. 完整的eslint、stylelint配置，严格的ts类型限制
@@ -18,14 +17,14 @@
 5. 支持音视频裁剪，以及添加贴图、文字
 6. 支持时间轴缩放（ctrl+滚轮），最多显示30帧
 7. 支持播放预览
+8. 添加操作撤销、重做功能
 
 ## 下一步
 1. 添加导出功能
 2. 添加拖拽调节资源大小、位置功能
 3. 添加持久化存储功能
-4. 添加操作撤销、重做功能
-5. **改善性能**！
-6. ...
+4. **改善性能**！
+5. ...
 
 ## 预览
 ![image](https://github.com/pan-jy/VideoEditor/assets/81850790/aea240da-647b-42ba-aaf0-3b1f6b58d672)

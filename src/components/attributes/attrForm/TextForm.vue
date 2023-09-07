@@ -58,6 +58,9 @@
           <el-input
             style="width: 80%"
             v-model="textAttr.content"
+            @change="(val:string)=>{
+              if(val === '') textAttr.content = '默认内容'
+            }"
             :autosize="{ minRows: 1, maxRows: 4 }"
             type="textarea"
             placeholder="请输入"
@@ -69,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch } from 'vue'
+import { computed, reactive } from 'vue'
 import { useAttrStore } from '~/stores/attrStore'
 import { TextAttr } from '~/types/attributes'
 
@@ -78,9 +81,7 @@ const attrStore = useAttrStore()
 
 const activeNames = reactive(['1', '2'])
 
-const textAttr = attrStore.attrMap.get(props.id) as TextAttr
-
-watch(textAttr, (textAttr) => {
-  console.log(textAttr)
+const textAttr = computed(() => {
+  return attrStore.attrMap.get(props.id) as TextAttr
 })
 </script>

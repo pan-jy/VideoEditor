@@ -32,17 +32,20 @@ const sideBarMenu: MenuItem[] = [
   }
 ]
 
-const trackHeaderMenu: Array<Omit<MenuItem, 'type'>> = [
+const trackHeaderMenu: MenuItem[] = [
   {
     icon: ArrowLeftBold,
-    title: '后退'
+    type: 'undo',
+    title: '撤销'
   },
   {
     icon: ArrowRightBold,
-    title: '前进'
+    type: 'redo',
+    title: '重做'
   },
   {
     icon: DeleteFilled,
+    type: 'delete',
     title: '删除'
   }
 ]

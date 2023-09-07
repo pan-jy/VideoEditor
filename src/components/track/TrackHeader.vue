@@ -6,7 +6,16 @@
         :key="item.title"
         :content="item.title"
       >
-        <el-button :icon="item.icon" @click="operation(item.title)" circle />
+        <el-button
+          :disabled="
+            (item.type === 'undo' && historyStore.historyIdx === 0) ||
+            (historyStore.historyIdx === historyStore.history.length - 1 &&
+              item.type === 'redo')
+          "
+          :icon="item.icon"
+          @click="operation(item.type)"
+          circle
+        />
       </el-tooltip>
     </div>
     <div class="track-header-right">
@@ -24,12 +33,18 @@
 
 <script setup lang="ts">
 import { trackHeaderMenu } from '~/config/baseMenu'
+import { useHistoryStore } from '~/stores/historyStore'
 import { useTrackStore } from '~/stores/trackStore'
 
 const trackStore = useTrackStore()
+const historyStore = useHistoryStore()
 
 function operation(type: string) {
-  if (type === '删除') {
+  if (type === 'redo') {
+    historyStore.redo()
+  } else if (type === 'undo') {
+    historyStore.undo()
+  } else if (type === 'delete') {
     const focusedItemIdx = trackStore.focusedItemIdx
     if (focusedItemIdx === undefined) return
     trackStore.focusedItem = undefined
