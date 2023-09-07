@@ -6,7 +6,16 @@
         :key="item.title"
         :content="item.title"
       >
-        <el-button :icon="item.icon" @click="operation(item.type)" circle />
+        <el-button
+          :disabled="
+            (item.type === 'undo' && historyStore.historyIdx === 0) ||
+            (historyStore.historyIdx === historyStore.history.length - 1 &&
+              item.type === 'redo')
+          "
+          :icon="item.icon"
+          @click="operation(item.type)"
+          circle
+        />
       </el-tooltip>
     </div>
     <div class="track-header-right">

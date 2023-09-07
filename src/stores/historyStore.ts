@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { reactive, toRaw, watch } from 'vue'
+import { reactive, ref, toRaw, watch } from 'vue'
 import { AttrMap, useAttrStore } from './attrStore'
 import { useTrackStore } from './trackStore'
 import { TrackList } from '~/types/tracks'
@@ -45,7 +45,8 @@ export const useHistoryStore = defineStore('historyStore', () => {
     }
   ])
 
-  let historyIdx = 0
+  // let historyIdx = 0
+  const historyIdx = ref(0)
   let isRedoOrUndo = false
 
   watch(
@@ -60,14 +61,14 @@ export const useHistoryStore = defineStore('historyStore', () => {
           trackList: deepClone(toRaw(newVal[0])),
           attrMap: deepClone(toRaw(newVal[1]))
         } as HistoryItem
-        if (historyIdx < history.length - 1) {
-          history.splice(historyIdx)
+        if (historyIdx.value < history.length - 1) {
+          history.splice(historyIdx.value)
           history.push(historyItem)
         } else {
           history.push(historyItem)
         }
         if (history.length > MAX_HISTORY_LENGTH) history.shift()
-        historyIdx = history.length - 1
+        historyIdx.value = history.length - 1
       },
       100,
       {
@@ -85,15 +86,15 @@ export const useHistoryStore = defineStore('historyStore', () => {
     const { attrMap, trackList } = history[idx]
     attrStore.patchAttrMap(attrMap)
     trackStore.trackList.splice(0, trackStore.trackList.length, ...trackList)
-    historyIdx = idx
+    historyIdx.value = idx
   }
 
   function redo() {
-    travelTo(historyIdx + 1)
+    travelTo(historyIdx.value + 1)
   }
 
   function undo() {
-    travelTo(historyIdx - 1)
+    travelTo(historyIdx.value - 1)
   }
 
   return {
