@@ -69,7 +69,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch } from 'vue'
+import { computed, reactive } from 'vue'
 import { useAttrStore } from '~/stores/attrStore'
 import { TextAttr } from '~/types/attributes'
 
@@ -78,9 +78,7 @@ const attrStore = useAttrStore()
 
 const activeNames = reactive(['1', '2'])
 
-const textAttr = attrStore.attrMap.get(props.id) as TextAttr
-
-watch(textAttr, (textAttr) => {
-  console.log(textAttr)
+const textAttr = computed(() => {
+  return attrStore.attrMap.get(props.id) as TextAttr
 })
 </script>

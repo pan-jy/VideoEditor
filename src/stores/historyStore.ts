@@ -69,7 +69,7 @@ export const useHistoryStore = defineStore('historyStore', () => {
         if (history.length > MAX_HISTORY_LENGTH) history.shift()
         historyIdx = history.length - 1
       },
-      500,
+      100,
       {
         maxWait: 1000
       }
