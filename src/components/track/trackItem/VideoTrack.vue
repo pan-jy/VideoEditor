@@ -38,8 +38,8 @@ const waveStyle = computed(() => {
 
 const waveFileUrl = ref('')
 const loading = ref(true)
-playerStore.inLoadingCount++
 async function initVideo() {
+  playerStore.inLoadingCount++
   const { name, file, format, frameCount, time, width, height } =
     props.trackItem
   if (time > 0 && ffmpeg.isLoaded()) {

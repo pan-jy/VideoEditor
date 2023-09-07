@@ -40,8 +40,8 @@ const waveStyle = computed(() => {
 
 const waveFileUrl = ref('')
 const loading = ref(true)
-playerStore.inLoadingCount++
 async function initAudio() {
+  playerStore.inLoadingCount++
   const { name, file, format, frameCount, time } = props.trackItem
   if (time > 0 && ffmpeg.isLoaded()) {
     await ffmpeg.writeFile(ffmpeg.pathConfig.resourcePath, file.name, file)
