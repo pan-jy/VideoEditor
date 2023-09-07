@@ -86,6 +86,7 @@ export const useHistoryStore = defineStore('historyStore', () => {
     const { attrMap, trackList } = history[idx]
     attrStore.patchAttrMap(attrMap)
     trackStore.trackList.splice(0, trackStore.trackList.length, ...trackList)
+    trackStore.focusedItem = undefined
     historyIdx.value = idx
   }
 

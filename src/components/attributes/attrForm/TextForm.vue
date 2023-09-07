@@ -58,6 +58,9 @@
           <el-input
             style="width: 80%"
             v-model="textAttr.content"
+            @change="(val:string)=>{
+              if(val === '') textAttr.content = '默认内容'
+            }"
             :autosize="{ minRows: 1, maxRows: 4 }"
             type="textarea"
             placeholder="请输入"
