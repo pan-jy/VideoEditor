@@ -141,7 +141,7 @@ const onDragOverTrackLine = useThrottleFn((e: DragEvent, index: number) => {
  * @param e 拖拽事件回调
  */
 async function getDraggedFiles(e: DragEvent) {
-  const files = []
+  const files: File[] = []
   // 获取拖动的文件
   const fileInfo = e.dataTransfer?.getData('fileInfo')
   if (fileInfo) {
