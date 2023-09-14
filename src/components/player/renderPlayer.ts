@@ -11,6 +11,7 @@ import { usePlayerStore } from '~/stores/playerStore'
 import { CanvasTextBaseline, CanvasTextAlign, CanvasAttr } from '~/types/canvas'
 import { useAttrStore } from '~/stores/attrStore'
 import { AudioAttr, ItemAttr, TextAttr } from '~/types/attributes'
+import { isDark } from '~/common/composables/useDark'
 
 type TextOptions = {
   textBaseLine: CanvasTextBaseline
@@ -33,6 +34,7 @@ export class RenderPlayer {
     textBaseLine: 'middle',
     textAlign: 'center'
   }
+  private bgColor = isDark ? '#111827' : '#fff'
 
   constructor(
     player: Ref<HTMLCanvasElement | undefined>,
@@ -75,6 +77,11 @@ export class RenderPlayer {
   }
 
   private initWatch() {
+    // 更改背景色
+    watch(isDark, (isDark) => {
+      this.bgColor = isDark ? '#111827' : '#fff'
+      this.drawCanvas()
+    })
     // 大小变化时则更新大小
     watch(
       [
@@ -159,21 +166,10 @@ export class RenderPlayer {
     }
   }
 
-  private clearCanvas() {
-    if (this.preRenderContext === null) return
-    this.preRenderContext.clearRect(
-      0,
-      0,
-      this.canvasAttr.width,
-      this.canvasAttr.height
-    )
-    if (this.playerContext === null) return
-    this.playerContext.clearRect(
-      0,
-      0,
-      this.canvasAttr.width,
-      this.canvasAttr.height
-    )
+  private clearCanvas(context: CanvasRenderingContext2D | null = null) {
+    if (context === null) return
+    context.fillStyle = this.bgColor
+    context.fillRect(0, 0, this.canvasAttr.width, this.canvasAttr.height)
   }
 
   private async drawCanvas() {
@@ -207,7 +203,7 @@ export class RenderPlayer {
         }
       }
     )
-    this.clearCanvas()
+    this.clearCanvas(this.preRenderContext)
     // 按顺序绘制，先绘制视频，保证视频在底部
     await videoList.reduce(
       (chain, nextPromise) => chain.then(() => nextPromise()),
