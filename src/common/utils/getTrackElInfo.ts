@@ -1,45 +1,18 @@
-function isContains(target: HTMLElement | null, classes: string | string[]) {
-  if (!target) return false
-  if (typeof classes === 'string') classes = [classes]
-  for (const c of classes) {
-    if (target.classList.contains(c)) return true
-  }
-  return false
+import { trackLeftStart } from '~/config/tracks'
+
+let pre = 0
+// 获取鼠标相对于轨道（track-line）的偏移量
+function getOffsetX(e: DragEvent, dragOffsetX: number) {
+  const currentTarget = e.currentTarget as HTMLElement | null
+  if (!currentTarget) return pre
+  const offsetX =
+    e.x -
+    currentTarget.offsetLeft +
+    currentTarget.scrollLeft -
+    dragOffsetX -
+    trackLeftStart
+  pre = offsetX
+  return Math.max(0, offsetX)
 }
 
-function getOffsetX(e: DragEvent) {
-  let target = e.target as HTMLElement
-  let offsetX = e.offsetX
-  if (!isContains(target, ['tracks', 'track-line'])) {
-    if (isContains(target, 'track-list-content')) {
-      offsetX += target.scrollLeft
-    } else {
-      while (!isContains(target, ['track-item', 'track-list-content'])) {
-        offsetX += target.offsetLeft
-        target = target.parentElement as HTMLElement
-      }
-    }
-    if (isContains(target, 'track-item')) {
-      offsetX += target.offsetLeft
-    }
-  }
-  return Math.max(0, offsetX - 30)
-}
-/**
- * 用于返回外层元素（例如：track-item 内的任何元素的外层元素都是 track-item）
- * @param target 默认为最底层的元素
- * @returns 该元素的外层元素
- */
-function getOuterTarget(target: HTMLElement) {
-  if (!isContains(target, ['tracks', 'track-line', 'track-list-content'])) {
-    while (
-      target &&
-      !isContains(target, ['track-item', 'track-list-content'])
-    ) {
-      target = target.parentElement as HTMLElement
-    }
-  }
-  return target
-}
-
-export { isContains, getOffsetX, getOuterTarget }
+export { getOffsetX }

@@ -31,8 +31,8 @@ class BaseTrackItem {
     this.source = URL.createObjectURL(file)
   }
 
-  setStart(event: DragEvent, scale: number) {
-    this.start = pixelToFrameCount(scale, getOffsetX(event))
+  setStart(event: DragEvent, scale: number, dragOffsetX = trackLeftStart) {
+    this.start = pixelToFrameCount(scale, getOffsetX(event, dragOffsetX))
     this.end = this.start + this.frameCount - this.offsetL - this.offsetR
   }
 

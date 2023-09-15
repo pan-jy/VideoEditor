@@ -7,7 +7,7 @@ import type {
   TrackType,
   TrackItemIdx
 } from '~/types/tracks'
-import { trackOrder } from '~/config/tracks'
+import { trackLeftStart, trackOrder } from '~/config/tracks'
 import { useAttrStore } from './attrStore'
 
 export const useTrackStore = defineStore('trackStore', () => {
@@ -16,6 +16,8 @@ export const useTrackStore = defineStore('trackStore', () => {
   const scale = ref(5)
   const trackList = ref<TrackList>([])
   const focusedItem = ref<TrackItem | undefined>()
+  const dragOffsetX = ref(trackLeftStart)
+  const draggingItem = ref<TrackItem | undefined>()
 
   const focusedItemIdx = computed((): TrackItemIdx | undefined => {
     return getItemIdx(focusedItem.value)
@@ -53,10 +55,10 @@ export const useTrackStore = defineStore('trackStore', () => {
    * @param trackLine 待插入的行
    * @param trackItem 待插入的trackItem
    */
-  function getInsertable(trackLine: TrackLine, trackItem: TrackItem) {
+  function getInsertable(trackLine: TrackLine, start: number, end: number) {
     for (let i = trackLine.list.length - 1; i >= 0; i--) {
-      if (trackLine.list[i].end <= trackItem.start) break
-      if (trackLine.list[i].start < trackItem.end) return false
+      if (trackLine.list[i].end <= start) break
+      if (trackLine.list[i].start < end) return false
     }
     return true
   }
@@ -100,7 +102,10 @@ export const useTrackStore = defineStore('trackStore', () => {
     }
     const trackLine = trackList.value[lineIndex]
     // 类型相同且该位置可插入
-    if (trackLine.type === type && getInsertable(trackLine, trackItem)) {
+    if (
+      trackLine.type === type &&
+      getInsertable(trackLine, trackItem.start, trackItem.end)
+    ) {
       trackLine.list.push(trackItem)
       return
     }
@@ -136,6 +141,8 @@ export const useTrackStore = defineStore('trackStore', () => {
     scale,
     focusedItem,
     focusedItemIdx,
+    draggingItem,
+    dragOffsetX,
     trackList,
     initTrackList,
     insertToTrackList,

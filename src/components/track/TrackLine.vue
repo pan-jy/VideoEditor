@@ -5,7 +5,8 @@
     :class="{ 'is-main': trackLine.isMian, 'is-active': isActive }"
     :style="{
       height: trackHeight[trackLine.type],
-      margin: `5px 0 5px ${start}px`
+      margin: `5px 0 5px ${start}px`,
+      minWidth: `calc(100% - ${start}px)`
     }"
   >
     <TrackItem
@@ -57,12 +58,12 @@ watch(
 .track-line {
   position: relative;
   display: flex;
-  min-width: 100%;
 }
 .is-main {
   background-color: var(--ep-color-primary-light-8);
 }
 
+.is-target-line,
 .is-active {
   background-color: var(--ep-fill-color-dark);
 }

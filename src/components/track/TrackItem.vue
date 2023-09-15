@@ -7,6 +7,12 @@
       opacity: isDragging ? 0.3 : 1
     }"
     @click.stop="itemClick"
+    @mousedown="
+      (e:MouseEvent & any) => {
+        trackStore.dragOffsetX = e.layerX
+        trackStore.draggingItem = trackItem
+      }
+    "
   >
     <div
       class="left-handler"
@@ -43,6 +49,7 @@ import {
   pixelToFrameCount
 } from '~/common/utils/drawTimeLine'
 import { trackCheckPlaying } from './trackCheckPlaying'
+import { trackLeftStart } from '~/config/tracks'
 
 const props = defineProps<{
   trackItem: TrackItem
@@ -145,6 +152,8 @@ function dragItem(e: DragEvent) {
 function dragEnd() {
   isDragging.value = false
   trackStore.focusedItem = props.trackItem
+  trackStore.dragOffsetX = trackLeftStart
+  trackStore.draggingItem = undefined
 }
 
 const componentMap: { [K in TrackType]: never } = {
@@ -165,12 +174,13 @@ const componentMap: { [K in TrackType]: never } = {
     height: 100%;
     overflow: hidden;
     cursor: grab;
-    border-radius: 0.3rem;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    border-radius: 2px;
   }
 
   .show-border {
-    border-top: 1px solid var(--ep-text-color-primary);
-    border-bottom: 1px solid var(--ep-text-color-primary);
+    border-color: var(--ep-text-color-primary);
     border-radius: 0;
   }
 }
@@ -199,15 +209,15 @@ const componentMap: { [K in TrackType]: never } = {
 }
 
 .left-handler {
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
   transform: translateX(-100%);
 }
 
 .right-handler {
   right: 0;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
   transform: translateX(100%);
 }
 </style>

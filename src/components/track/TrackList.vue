@@ -40,20 +40,33 @@
           :lineIndex="index"
           :trackLine="trackLine"
           @dragover.prevent="onDragOverTrackLine($event, index)"
-          :class="[
-            lineIndex === index && isDragging
-              ? showInfoLineBootom
-                ? 'info-line-bottom'
-                : 'info-line-top'
-              : ''
-          ]"
+          :class="{
+            'info-line-top':
+              isDragging &&
+              infoLineIndex !== undefined &&
+              Math.floor(infoLineIndex / 3) === index &&
+              infoLineIndex % 3 === 0,
+            'info-line-bottom':
+              isDragging &&
+              infoLineIndex !== undefined &&
+              Math.floor(infoLineIndex / 3) === index &&
+              infoLineIndex % 3 === 2,
+            'is-target-line':
+              isDragging &&
+              infoLineIndex !== undefined &&
+              Math.floor(infoLineIndex / 3) === index &&
+              infoLineIndex % 3 === 1
+          }"
+        />
+        <div
+          v-show="isDragging"
+          class="info-line-left"
+          :style="{
+            left: `${offsetX + trackLeftStart}px`,
+            top: `${scrollVal.scrollTop}px`
+          }"
         />
       </div>
-      <div
-        v-show="isDragging"
-        class="info-line-left"
-        :style="{ left: `${offsetX}px`, top: `${scrollVal.scrollTop}px` }"
-      />
     </article>
   </div>
 </template>
@@ -63,11 +76,7 @@ import { Files } from '@element-plus/icons-vue'
 import { reactive, ref } from 'vue'
 import { getFile } from '~/common/utils/fetchFile'
 import { useTrackStore } from '~/stores/trackStore'
-import {
-  isContains,
-  getOffsetX,
-  getOuterTarget
-} from '~/common/utils/getTrackElInfo'
+import { getOffsetX } from '~/common/utils/getTrackElInfo'
 import { getResourcesType } from '~/common/utils/getResourcesInfo'
 import { useThrottleFn } from '@vueuse/core'
 import {
@@ -112,29 +121,32 @@ const isDragging = ref(false)
 const offsetX = ref(0)
 const onDragOverTrackList = useThrottleFn((e: DragEvent) => {
   isDragging.value = true
-  offsetX.value = getOffsetX(e) + trackLeftStart
-}, 100)
+  offsetX.value = getOffsetX(e, trackStore.dragOffsetX)
+}, 30)
 
 // 待插入的 trackLine 的 index
+const infoLineIndex = ref<number | undefined>(undefined)
+enum InfoLine {
+  top,
+  target,
+  bottom
+}
 const lineIndex = ref<number | undefined>(undefined)
-// 是否显示底部提示线
-const showInfoLineBootom = ref(true)
 const onDragOverTrackLine = useThrottleFn((e: DragEvent, index: number) => {
-  const targets = document.elementsFromPoint(e.x - 30, e.y)
-  // 避免 target 的是 info-line
-  const target = (
-    targets[0].classList.contains('info-line-left') ? targets[1] : targets[0]
-  ) as HTMLElement
-  // 获取 target 外层元素
-  const outerTarget = getOuterTarget(target)
-  // 是否和已有的 trackItem 发生重叠
-  const overlapItem = isContains(outerTarget, 'track-item')
-  if (overlapItem) {
-    showInfoLineBootom.value = false
-    index++
-  } else showInfoLineBootom.value = true
+  console.log(trackStore.draggingItem)
+  const target = e.target as HTMLElement
+  const lineHeight = target.offsetHeight
+  const top = e.offsetY
+  const interval = lineHeight / 3
+  if (top >= 0 && top < interval) {
+    infoLineIndex.value = index * 3 + InfoLine.top
+  } else if (top >= interval && top <= lineHeight - interval) {
+    infoLineIndex.value = index * 3 + InfoLine.target
+  } else {
+    infoLineIndex.value = index * 3 + InfoLine.bottom
+  }
   lineIndex.value = index
-}, 100)
+}, 30)
 
 /**
  * 获取拖拽的文件
@@ -195,7 +207,7 @@ async function onDrop(e: DragEvent) {
   if (trackItemIdx) {
     const { lineIdx, itemIdx } = JSON.parse(trackItemIdx) as TrackItemIdx
     const trackItem = trackList[lineIdx].list[itemIdx]
-    trackItem.setStart(e, trackStore.scale)
+    trackItem.setStart(e, trackStore.scale, trackStore.dragOffsetX)
     trackStore.removeTrackItem(lineIdx, itemIdx)
     trackStore.insertToTrackList(lineIndex.value, trackItem.type, trackItem)
     e.dataTransfer?.clearData()
